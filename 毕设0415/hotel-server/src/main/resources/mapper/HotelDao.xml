@@ -1,0 +1,71 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.lyf.hotelserver.dao.HotelDao">
+    <select id="getHotelByHotelId" resultMap="hotelDO" parameterType="java.lang.String">
+        SELECT
+         room_id,room_type,room_price,room_picture_path,room_desc,booked,user_id
+        FROM table_room tr
+        where
+          tr.room_id = #{roomId}
+    </select>
+    <select id="getHotelOrderInfoByHotelId" resultMap="hotelDO" parameterType="java.lang.String">
+        SELECT
+        room_id,room_type,room_price,room_picture_path,booked,tr.user_id,guests,user_name
+        FROM table_room tr,table_user tu
+        where
+        tr.user_id = tu.user_id AND tr.room_id = #{roomId}
+    </select>
+    <resultMap id="hotelDO" type="cn.lyf.hotelserver.entity.HotelDO" autoMapping="true">
+        <id column="room_id" property="roomId"/>
+        <result column="room_type" property="roomType"/>
+        <result column="room_price" property="roomPrice"/>
+        <result column="room_picture_path" property="roomPicturePath"/>
+        <result column="room_desc" property="roomDescribe"/>
+        <result column="booked" property="booked"/>
+        <result column="user_id" property="userId"/>
+        <result column="user_name" property="userName"/>
+    </resultMap>
+
+    <select id="findAllHotels" resultMap="hotelDO">
+       SELECT
+         room_id,room_type,room_price,room_picture_path,room_desc,booked,user_id
+        FROM table_room
+        WHERE status = '0'
+    </select>
+
+    <select id="getHotelByUserName" resultMap="hotelDO" parameterType="java.lang.String">
+        SELECT
+         room_id,room_type,room_price,room_picture_path,room_desc,booked,u.user_id
+        FROM table_room h,table_user u
+        where
+          h.user_id = u.user_id AND u.user_name = #{userName}
+    </select>
+
+    <insert id="addHotel" useGeneratedKeys="true" keyProperty="id">
+        insert into table_room(room_id,room_type,room_price,room_picture_path,room_desc,booked,user_id)
+        values(#{roomId},#{roomType},#{roomPrice},#{roomPicturePath},#{roomDescribe},#{booked},#{userId})
+    </insert>
+
+    <update id="updateHotel">
+        UPDATE table_room
+        <set>
+            <if test="roomType != null">room_type = #{roomType},</if>
+            <if test="roomPrice != null">room_price = #{roomPrice},</if>
+            <if test="roomPicturePath != null">room_picture_path = #{roomPicturePath},</if>
+            <if test="booked != null">booked = #{booked},</if>
+            <if test="userId != null">user_id = #{userId},</if>
+            <if test="userId != null">start_date = #{startDate},</if>
+            <if test="userId != null">end_date = #{endDate}</if>
+        </set>
+        where room_id = #{roomId}
+    </update>
+    <update id="deleteHotel" parameterType="java.lang.String">
+        UPDATE table_room
+        <set>
+            <if test="roomId != null">status = '1'</if>
+        </set>
+        where room_id = #{roomId}
+    </update>
+</mapper>

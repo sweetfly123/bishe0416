@@ -1,0 +1,240 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <title>房间总览</title>
+</head>
+<link rel="stylesheet" href="../assets/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="../assets/font-awesome/4.2.0/css/font-awesome.min.css"/>
+
+<link rel="stylesheet" href="../assets/fonts/fonts.googleapis.com.css"/>
+
+<link rel="stylesheet" href="../assets/css/ace.min.css"/>
+
+<link rel="stylesheet" href="../assets/css/ace-part2.min.css"/>
+<link rel="stylesheet" href="../assets/css/ace-rtl.min.css"/>
+
+<!--layerui-->
+<link rel="stylesheet" href="../layerui/css/layui.css">
+<script src="../layerui/layui.js"></script>
+
+<link rel="stylesheet" href="../assets/css/ace-ie.min.css"/>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script src="../assets/js/html5shiv.min.js"></script>
+<script src="../assets/js/respond.min.js"></script>
+<script src="../assets/js/jquery.2.1.1.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<style>
+    .layui-layer-lan1 .layui-layer-title {
+        background: #33aecc;
+        color: #fff;
+        border: none;
+    }
+</style>
+<script>
+    var token = localStorage.getItem("token");
+    $(function () {
+        $.ajax({
+            url: "http://localhost:8002/hotel/hotels/hotel",
+            type: "GET",
+            async: false,
+            dataType: "json",
+            beforeSend: function (e) {
+                e.setRequestHeader("Authorization", "bearer " + token);
+            },
+            success: function (data) {
+                var i = 0;
+                var context = "";
+                var type;
+                var booked;
+                for (i in data) {
+                    if (data[i].roomType == "1") {
+                        type = "单人";
+                    } else {
+                        type = "双人";
+                    }
+                    if (data[i].booked == true) {//
+                        booked = "已预订|<a href=\"#\" data-toggle=\"modal\" onclick=\"checkdetails(" + data[i].roomId + ")\" data-target=\"#details\" id=\"check\" title=\"查看详情\">查看</a>";
+                    } else {
+                        booked = "空房";
+                    }
+                    context += "<div style=\"height: 70px;text-align: center;line-height: 70px;border-bottom:1px solid #2b3d53;\">" +
+                        "<div class=\"col-md-2\">" + data[i].roomId + "</div>" +
+                        "<div class=\"col-md-2\">" + type + "</div>" +
+                        "<div class=\"col-md-2\"><img style=\"width: 60px;height: 60px;\" src=\"http://localhost:8002/hotel/resources/" + data[i].roomPicturePath + "\"></div>" +
+                        "<div class=\"col-md-2\">" + data[i].roomPrice + "</div>" +
+                        "<div class=\"col-md-2\">" + booked + "</div>" +
+                        "<div class=\"col-md-2\">" +
+                        "<button onclick=\"hotelEdit(" + data[i].roomId + ")\" type=\"button\" class=\"glyphicon glyphicon-edit btn-xs btn-primary\" style=\"border: none;\">" +
+                        "</button>&nbsp;" +
+                        "<button onclick=\"hotelDelete(" + data[i].roomId + ")\" type=\"button\" class=\"glyphicon glyphicon-trash btn-xs btn-danger\" style=\"border: none;\">" +
+                        "</button></div>" +
+                        "</div>";
+                    $("#roomList").append(context);
+                    context = "";
+                }
+            }
+        });
+    });
+
+    function hotelEdit(roomId) {
+        window.location.href = "http://localhost:8002/hotel/resources/page/editRoom.html?roomId=" + roomId;
+    }
+
+    function hotelDelete(roomId) {
+        layui.use(['layer', 'form'], function () {
+            var layer = layui.layer
+                , form = layui.form;
+            layer.open({
+                title: '提示',
+                offset: '150px',
+//                background: '#33aecc',
+//                style: 'background: rgba(216,100,125,0.9); color:#fff; border:none;',
+                skin: 'layui-layer-lan1',
+                content: '确定删除该房间信息？',
+                btn: ['确定', '取消'],
+                yes: function (index, layero) {
+
+                    $.ajax({
+                        url: "http://localhost:8002/hotel/hotels/hotel/room/" + roomId,
+                        type: "PUT",
+                        async: false,
+                        dataType: "json",
+                        beforeSend: function (e) {
+                            e.setRequestHeader("Authorization", "bearer " + token);
+                        },
+                        success: function (data) {
+                            layer.open({
+                                title: '提示',
+                                offset: '150px',
+                                skin: 'layui-layer-lan1',
+                                content: '删除成功',
+                                btn: ['确定'],
+                                yes: function (index, layero) {
+                                    window.location.href = "http://localhost:8002/hotel/resources/page/allRoom.html";
+                                }
+                            });
+                        }
+                    });
+                },
+
+                cancel: function () {
+                    //右上角关闭回调
+                }
+            });
+        });
+    }
+
+    function checkdetails(roomId) {
+        $.ajax({
+            url: "http://localhost:8002/hotel/hotels/hotel/order/" + roomId,
+            type: "GET",
+            async: false,
+            dataType: "json",
+            beforeSend: function (e) {
+                e.setRequestHeader("Authorization", "bearer " + token);
+            },
+            success: function (data) {
+                $("#booker").text(data.userName);
+                $("#dialog-roomId").text(data.roomId);
+                $("#dialog-roomType").text(data.roomType);
+                $("#dialog-roomPrice").text(data.roomPrice);
+                $("#dialog-number").text(data.guests);
+            }
+        })
+    }
+</script>
+<style>
+
+    td {
+        height: 50px;
+        text-align: center;
+        line-height: inherit;
+    }
+</style>
+<body>
+<table id="roomList" class="table table-hover">
+    <div class="input-group" style="text-align: center;margin: 20px auto;">
+        <text style="margin-right: 20px;">用户名</text>
+        <input type="text" width="200px" placeholder="用户姓名">
+        <text style="margin:0px 20px;">房间类型</text>
+        <select name="roomType" style="height: 30px;width: 200px" id="roomType">
+            <option value="0"></option>
+            <option value="1">单人</option>
+            <option value="2">双人</option>
+        </select>
+        <text style="margin:0px 20px;">是否预订</text>
+        <select name="roomType" style="height: 30px;width: 200px" id="roomType1">
+            <option value="1"></option>
+            <option value="1">是</option>
+            <option value="2">否</option>
+        </select>
+        <button type="button" style="margin-left: 30px;height: 30px;width: 80px;background: #8AB2C9;">查询</button>
+    </div><!-- /input-group -->
+    <div style="height: 70px;text-align: center;line-height: 70px;border-top:1px solid #000;border-bottom:1px solid #000;">
+        <div class="col-md-2">房间号</div>
+        <div class="col-md-2">房间类型</div>
+        <div class="col-md-2">图片简介</div>
+        <div class="col-md-2">价格</div>
+        <div class="col-md-2">是否预订</div>
+        <div class="col-md-2">操作</div>
+    </div>
+    <!--<div style="height: 70px;text-align: center;line-height: 70px;border-bottom:1px solid #000;">
+        <div class="col-md-2" style="border-right:1px solid #000;">单人</div>
+        <a href="#" data-toggle="modal" data-target="#details" id="check" title="查看详情">查看</a>
+        <div class="col-md-2"><img style="width: 60px;height: 60px;"
+                                   src="http://localhost:8002/hotel/resources/u=1208544201,1064095414&fm=72.jpg"></div>
+        <div class="col-md-2">120</div>
+        <div class="col-md-2">
+            <button onclick="hotelEdit()" type="button" class="glyphicon glyphicon-edit btn-xs btn-primary"
+                    style="border: none;">
+            </button>&nbsp;
+            <button onclick=hotelDelete("") type="button" class="glyphicon glyphicon-trash btn-xs btn-danger"
+                    style="border: none;">
+            </button>
+        </div>
+        <a data-toggle="modal" data-target="#details" id="sign-in" class="login" title="Sign In">Sign In</a>
+    </div>-->
+</table>
+<div class="modal fade" id="details" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false"
+     aria-labelledby="exampleModalLabel">
+    <div class="modal-dialog" style="width:400px; height:auto;" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4>住宿详情</h4>
+            </div>
+            <div class="modal-body">
+                <form>
+                    <div class="form-group" style="padding-left: 20px;">
+                        <label>预订人:<span id="booker" style="margin-left: 20px;"></span></label>
+                    </div>
+                    <div class="form-group" style="padding-left: 20px;">
+                        <label>房间号:<span id="dialog-roomId" style="margin-left: 20px;"></span></label>
+                    </div>
+                    <div class="form-group" style="padding-left: 20px;">
+                        <label>房间类型:<span id="dialog-roomType" style="margin-left: 20px;"></span></label>
+                    </div>
+                    <div class="form-group" style="padding-left: 20px;">
+                        <label>价格:<span id="dialog-roomPrice" style="margin-left: 20px;"></span></label>
+                    </div>
+                    <div class="form-group" style="padding-left: 20px;">
+                        <label>住宿人数:<span id="dialog-number" style="margin-left: 20px;"></span></label>
+                    </div>
+                    <div class="form-group" style="padding-left: 20px;">
+                        <label>日期:<span id="dialog-date" style="margin-left: 20px;"></span></label>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

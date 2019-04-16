@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<script src="../assets/js/jquery.2.1.1.min.js"></script>
+<script>
+    function add() {
+        var token = localStorage.getItem("token"),
+            roomId = $("#roomId").val(),
+            roomType = $("#roomType").val(),
+            roomPrice = $("#roomPrice").val();
+
+        var file = document.getElementById("roomPicturePath").files[0];
+        var formData = new FormData();
+        formData.append('roomId', roomId);
+        formData.append('roomType', roomType);
+        formData.append('roomPrice', roomPrice);
+        formData.append('file', file);
+
+        $.ajax({
+            url: "http://localhost:8002/hotel/hotels/hotel",
+            type: "POST",
+            contentType: "application/json;charset=utf-8",
+            async: false,
+            data: formData,
+            contentType: false,
+            processData: false,
+            mimeType: "multipart/form-data",
+            beforeSend: function (e) {
+                e.setRequestHeader("Authorization", "bearer " + token);
+            },
+            success: function (data) {
+                alert("添加成功！");
+                window.location.href = "http://localhost:8002/hotel/resources/page/addRoom.html";
+            }
+        });
+    }
+
+    function previewFile() {
+        $("#text").html($("#roomPicturePath").val());
+        // 通过标签选择器获取HTML元素
+        var preview = document.querySelector('img');
+        var file = document.getElementById("roomPicturePath").files[0];
+        // Js内置文件流
+        var reader = new FileReader();
+
+        // 更新img标签的src属性为图片的本地路径，就可以显示了
+        reader.onloadend = function () {
+            preview.src = reader.result;
+            preview.style.display = "";
+        };
+
+        // 图片文件不空就显示
+        if (file) {
+            reader.readAsDataURL(file);
+        } else {
+            // 图片文件是空的
+            preview.src = "";
+            preview.style.display = "none;"
+        }
+    }
+</script>
+
+
+<body>
+<form id="roomInfo" name="Form1" action="http://localhost:8080/cons/hotel/addHotel" method="post"
+      enctype="multipart/form-data">
+    &nbsp;
+    <table style="border-collapse:separate; border-spacing:0px 15px;" width="80%" align="center" bgColor="#efeef0">
+        <tr border="1">
+            <td align="center" bgColor="#efeef0" colSpan="1" height="50">
+                <strong>添加房间</strong>
+            </td>
+        </tr>
+        <tr style="border: 1px solid;">
+            <td width="15%" align="center" bgColor="#efeef0">
+                酒店房号：
+            </td>
+            <td bgColor="#efeef0">
+                <input type="text" name="roomId" value="" id="roomId" style="height: 30px;width: 200px"/>
+            </td>
+        </tr>
+        <tr>
+            <td width="15%" align="center" bgColor="#efeef0">
+                酒店价格：
+            </td>
+            <td bgColor="#efeef0">
+                <input type="text" name="shop_price" value="" id="roomPrice" style="height: 30px;width: 200px"/>
+            </td>
+        </tr>
+        <tr>
+            <td width="15%" align="center" bgColor="#efeef0">
+                酒店图片：
+            </td>
+            <td bgColor="#efeef0">
+                <label for="roomPicturePath" style="position: relative;">
+                    <input type="button" style=" padding: 5px 10px;background: #00b0f0;color: #FFF;border: none;border-radius: 5px;" id="btn" value="点我上传"><span id="text" style="color: #8D939E;">选择图片</span>
+                    <input type="file" id="roomPicturePath" onchange="previewFile()"
+                           style="height: 30px;width: 200px;position: absolute;left: 0;top:0;opacity: 0;">
+                </label>
+
+                <!--<input type="file" name="upload" id="roomPicturePath" onchange="previewFile()" style="height: 30px;width: 200px" />-->
+            </td>
+            <td>
+                <img src="" style="float: left;width: 30px;height: 30px;display: none;" alt=""/>
+            </td>
+        </tr>
+        <tr>
+            <td width="15%" align="center" bgColor="#efeef0">
+                酒店类别：
+            </td>
+            <td bgColor="#efeef0" name="roomType">
+                <select name="roomType" style="height: 30px;width: 200px" id="roomType">
+                    <option value="1">单人</option>
+                    <option value="2">双人</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td width="15%" align="center" bgColor="#efeef0">
+                是否被预订：
+            </td>
+            <td bgColor="#efeef0" name="roomType">
+                <select name="booked" style="height: 30px;width: 200px" id="booked">
+                    <option value="0">否</option>
+                    <option value="1">是</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td width="15%" align="center" bgColor="#efeef0">
+                <INPUT type="button" onclick="add()" value="确定"/>
+            </td>
+            <td width="15%" align="center" bgColor="#efeef0">
+                <button type="reset" value="重置" class="button_cancel">重置</button>
+            </td>
+            <td width="15%" align="center" bgColor="#efeef0">
+                <INPUT class="button_ok" type="button" onclick="history.go(-1)" value="返回"/>
+            </td>
+            <td></td>
+        </tr>
+    </table>
+</form>
+</body>
+</html>

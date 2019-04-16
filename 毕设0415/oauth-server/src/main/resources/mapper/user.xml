@@ -1,0 +1,38 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.lyf.oauthserver.dao.UserDao">
+    <select id="login" resultMap="loginresultmap">
+        SELECT user_id,user_name,password,role_name FROM table_user tu, table_role tr where tu.role = tr.role_id AND tu.user_name = #{userName}
+    </select>
+
+    <resultMap id="loginresultmap" type="UserEntity">
+        <id column="user_id" property="userId" />
+        <result column="user_name" property="userName" />
+        <result column="password" property="password" />
+        <result column="role_name" property="role" />
+    </resultMap>
+    <!--<resultMap type="com.foo.easybuy.pojo.Order" id="orderAndDetailsMap" autoMapping="true">
+
+        <id column="orderId" property="id"/>
+        <collection property="orderDetails" ofType="com.foo.easybuy.pojo.OrderDetail" autoMapping="true">
+            <id column="orderDetailId" property="id"/>
+            <result column="orderDetailCost" property="cost"/>
+            <association property="product" javaType="com.foo.easybuy.pojo.Product" autoMapping="true">
+                <id column="productId" property="id"/>
+            </association>
+        </collection>
+    </resultMap>-->
+    <insert id="register" useGeneratedKeys="true" keyProperty="userId">
+        insert into table_user(user_name,password) values(#{userName},#{password});
+    </insert>
+    <select id="getAuthorities" parameterType="java.lang.String"  resultType="java.lang.String">
+        SELECT permission_name FROM table_permission tp
+          WHERE tp.permission_id in
+         (SELECT permission_id FROM table_role_permission trp
+            WHERE trp.role_id =
+              (SELECT role FROM table_user tu WHERE tu.user_name = #{userName})
+          )
+    </select>
+</mapper>  

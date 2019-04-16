@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Maven default annotation processors profile" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <module name="config-server" />
+        <module name="eureka-server" />
+        <module name="hotel-server" />
+        <module name="hotel_server" />
+        <module name="oauth-server" />
+        <module name="static-resource-server" />
+        <module name="user-server" />
+        <module name="zipkin-server" />
+        <module name="zuul-server" />
+      </profile>
+    </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="auth-server" target="1.8" />
+      <module name="auth111" target="1.8" />
+      <module name="config-server" target="1.8" />
+      <module name="demo" target="1.8" />
+      <module name="demo1" target="1.8" />
+      <module name="demo11" target="1.8" />
+      <module name="eureka-server" target="1.8" />
+      <module name="hotel-server" target="1.8" />
+      <module name="hotel_server" target="1.8" />
+      <module name="oauth-server" target="1.8" />
+      <module name="repo" target="1.8" />
+      <module name="spring-cloud-config-client" target="1.8" />
+      <module name="springcloudoauth" target="1.5" />
+      <module name="static-resource-server" target="1.8" />
+      <module name="user-server" target="1.8" />
+      <module name="userserviceapi" target="1.5" />
+      <module name="zipkin" target="1.8" />
+      <module name="zipkin-server" target="1.8" />
+      <module name="zuul-server" target="1.8" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

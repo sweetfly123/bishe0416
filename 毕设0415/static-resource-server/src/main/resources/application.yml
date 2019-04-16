@@ -1,0 +1,44 @@
+spring:
+  application:
+    name: static-resource
+#  zipkin:
+#    base-url: http://localhost:8020
+#  mvc:
+#    static-path-pattern: /resources/**
+#  resources:
+#    static-locations: classpath:/META-INF/resources/,classpath:/resources/, classpath:/static/, classpath:/public/,file:${web.upload-path}
+
+server:
+  port: 8004
+
+security:
+  oauth2:
+    resource:
+      user-info-uri: http://localhost:8002/auth/users/user      #内置有user对象的地址，才能获取到同一个token
+      prefer-token-info: false
+feign:
+  hystrix:
+    enabled: true
+#eureka:
+#  client:
+#    service-url:
+#      defaultZone: http://${eureka.host:localhost}:${eureka.port:8001}/eureka/
+
+## 自定义文件上传路径
+#web:
+#  upload-path: D:/DevelopPhotos/
+hystrix:
+  command:
+    default:
+      execution:
+        timeout:
+          enabled: true
+        isolation:
+          thread:
+            timeoutInMilliseconds: 60000
+#hystrix:
+#  command:
+#    default:
+#      execution:
+#        isolation:
+#          strategy: Semaphore
