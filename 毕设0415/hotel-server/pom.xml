@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>cn.lyf</groupId>
-	<artifactId>hotel_server</artifactId>
+	<artifactId>hotel-server</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>hotelDO-server</name>
+	<name>hotel-server</name>
 	<description>Demo project for Spring Boot</description>
 
 	<parent>
