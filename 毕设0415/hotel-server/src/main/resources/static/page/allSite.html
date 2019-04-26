@@ -6,7 +6,7 @@
           content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
     <meta http-equiv="Cache-Control" content="no-siteapp"/>
-    <title>房间总览</title>
+    <title>景点总览</title>
 </head>
 <link rel="stylesheet" href="../assets/css/bootstrap.min.css"/>
 <link rel="stylesheet" href="../assets/font-awesome/4.2.0/css/font-awesome.min.css"/>
@@ -49,7 +49,7 @@
     var token = localStorage.getItem("token");
     $(function () {
         $.ajax({
-            url: "http://localhost:8002/hotel/hotels/hotel",
+            url: "http://localhost:8002/hotel/sites",
             type: "GET",
             async: false,
             dataType: "json",
@@ -57,44 +57,38 @@
                 e.setRequestHeader("Authorization", "bearer " + token);
             },
             success: function (data) {
+                var images = "";
                 var i = 0;
-                var context1 = "";
                 var context = "";
-                var type;
-                var booked;
                 for (i in data) {
-                    if (data[i].roomType == "1") {
-                        type = "单人";
-                    } else {
-                        type = "双人";
+                    var pictureIndex = 0;
+                    for (pictureIndex in data[i].pictures) {
+                        images += "<img style=\"margin-right: 10px;width: 60px;height: 60px;\" src=\"http://localhost:8002/hotel/resources/sites/" + data[i].pictures[pictureIndex] + "\">";
                     }
-                    if (data[i].booked == true) {//
-                        booked = "已预订|<a href=\"#\" data-toggle=\"modal\" onclick=\"checkdetails(" + data[i].roomId + ")\" data-target=\"#details\" id=\"check\" title=\"查看详情\">查看</a>";
-                    } else {
-                        booked = "空房";
-                    }
-                    context = "<tr><td>" + data[i].roomId + "</td>" +
-                        "<td>" + type + "</td>" +
-                        "<td><img style=\"width: 60px;height: 60px;\" src=\"http://localhost:8002/hotel/resources/hotel/" + data[i].roomPicturePath + "\"></td>" +
-                        "<td>" + data[i].roomPrice + "</td>" +
-                        "<td>" + booked + "</td>" +
-                        "<td>" + "<button onclick=\"hotelEdit(" + data[i].roomId + ")\" type=\"button\" class=\"glyphicon glyphicon-edit btn-xs btn-primary\" style=\"border: none;\">" +
+
+                    context = "<tr><td>" + data[i].siteName + "</td>" +
+                        "<td>" + data[i].siteDescribe + "</td>" +
+                        "<td>" + data[i].siteAddress + "</td>" +
+                        "<td>" + images + "</td>" +
+                        "<td>" + data[i].visitTimes + "</td>" +
+                        "<td>" + "<button onclick=\"siteEdit(" + data[i].id + ")\" type=\"button\" class=\"glyphicon glyphicon-edit btn-xs btn-primary\" style=\"border: none;\">" +
                         "</button>&nbsp;" +
-                        "<button onclick=\"hotelDelete(" + data[i].roomId + ")\" type=\"button\" class=\"glyphicon glyphicon-trash btn-xs btn-danger\" style=\"border: none;\">" +
+                        "<button onclick=\"siteDelete(" + data[i].id + ")\" type=\"button\" class=\"glyphicon glyphicon-trash btn-xs btn-danger\" style=\"border: none;\">" +
                         "</button>" + "</td>" +
                         "</tr>";
                     $("#tb").append(context);
                     context = "";
+                    images = "";
                 }
             }
         });
     });
 
-    function hotelEdit(roomId) {
-        window.location.href = "http://localhost:8002/hotel/resources/page/editRoom.html?roomId=" + roomId;
+    function siteEdit(siteId) {
+        window.location.href = "http://localhost:8002/hotel/resources/page/editRoom.html?roomId=" + siteId;
     }
 
-    function hotelDelete(roomId) {
+    function siteDelete(siteId) {
         layui.use(['layer', 'form'], function () {
             var layer = layui.layer
                 , form = layui.form;
@@ -104,12 +98,12 @@
 //                background: '#33aecc',
 //                style: 'background: rgba(216,100,125,0.9); color:#fff; border:none;',
                 skin: 'layui-layer-lan1',
-                content: '确定删除该房间信息？',
+                content: '确定删除景点信息？',
                 btn: ['确定', '取消'],
                 yes: function (index, layero) {
 
                     $.ajax({
-                        url: "http://localhost:8002/hotel/hotels/hotel/room/" + roomId,
+                        url: "http://localhost:8002/hotel/sites/" + siteId,
                         type: "PUT",
                         async: false,
                         dataType: "json",
@@ -130,31 +124,11 @@
                         }
                     });
                 },
-
                 cancel: function () {
                     //右上角关闭回调
                 }
             });
         });
-    }
-
-    function checkdetails(roomId) {
-        $.ajax({
-            url: "http://localhost:8002/hotel/hotels/hotel/order/" + roomId,
-            type: "GET",
-            async: false,
-            dataType: "json",
-            beforeSend: function (e) {
-                e.setRequestHeader("Authorization", "bearer " + token);
-            },
-            success: function (data) {
-                $("#booker").text(data.userName);
-                $("#dialog-roomId").text(data.roomId);
-                $("#dialog-roomType").text(data.roomType);
-                $("#dialog-roomPrice").text(data.roomPrice);
-                $("#dialog-number").text(data.guests);
-            }
-        })
     }
 </script>
 <style>
@@ -186,11 +160,11 @@
 <table id="tb">
     <thead>
     <tr>
-        <th>房间号</th>
-        <th>房间类型</th>
-        <th>图片简介</th>
-        <th>价格</th>
-        <th>是否预订</th>
+        <th>景点名称</th>
+        <th>景点简介</th>
+        <th>景点地址</th>
+        <th>景点图片</th>
+        <th>游历次数</th>
         <th>操作</th>
     </tr>
     </thead>

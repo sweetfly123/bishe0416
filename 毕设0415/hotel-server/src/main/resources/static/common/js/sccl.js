@@ -394,7 +394,7 @@ $(function(){
 	getSkinByCookie();
 	/*菜单json*/
 	var menu = [{"id":"1","name":"主菜单","parentId":"0","url":"","icon":"","order":"1","isHeader":"1","childMenus":[
-					{"id":"3","name":"酒店管理","parentId":"1","url":"","icon":"&#xe604;","order":"1","isHeader":"0","childMenus":[
+					{"id":"2","name":"酒店管理","parentId":"1","url":"","icon":"&#xe604;","order":"1","isHeader":"0","childMenus":[
 						{"id":"4","name":"房间总览","parentId":"3","url":"allRoom.html","icon":"","order":"1","isHeader":"0","childMenus":""},
                         {"id":"5","name":"添加房型","parentId":"3","url":"addRoom.html","icon":"","order":"1","isHeader":"0","childMenus":""},
                         {"id":"9","name":"房间总览","parentId":"3","url":"allRoom.html","icon":"","order":"1","isHeader":"0","childMenus":""}
@@ -402,6 +402,11 @@ $(function(){
 					{"id":"6","name":"订单管理","parentId":"1","url":"","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":[
 						{"id":"7","name":"已付款","parentId":"6","url":"home3.html","icon":"","order":"1","isHeader":"0","childMenus":""},
 						{"id":"8","name":"未付款","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""}
+					]},
+					{"id":"10","name":"景点管理","parentId":"1","url":"","icon":"&#xe602;","order":"1","isHeader":"0","childMenus":[
+						{"id":"11","name":"景点总览","parentId":"6","url":"allSite.html","icon":"","order":"1","isHeader":"0","childMenus":""},
+						{"id":"12","name":"景点发布","parentId":"6","url":"addSite.html","icon":"","order":"1","isHeader":"0","childMenus":""},
+                        {"id":"13","name":"景点图表","parentId":"6","url":"home4.html","icon":"","order":"1","isHeader":"0","childMenus":""}
 					]}
 				]},
 				{"id":"2","name":"框架案例","parentId":"0","url":"","icon":"","order":"2","isHeader":"1","childMenus":[

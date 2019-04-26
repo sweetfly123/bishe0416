@@ -84,8 +84,9 @@ public class HotelController {
 //        }
         //String localPath = "D:/DevelopPhotos";
         // 上传成功或者失败的提示
+        String realPath = path + "hotel/";
         String msg = "";
-        if (FileUtils.upload(file, path, file.getOriginalFilename())) {
+        if (FileUtils.upload(file, realPath, file.getOriginalFilename())) {
             // 上传成功，给出页面提示
             msg = "上传成功！";
         } else {
@@ -108,9 +109,10 @@ public class HotelController {
     @RequestMapping(value = "/hotel/modify", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('admin')")
     public int updateHotel(MultipartFile file, HotelDO hotelDO) {
+        String realPath = path + "hotel/";
         String msg = "";
         if (file != null) {
-            if (FileUtils.upload(file, path, file.getOriginalFilename())) {
+            if (FileUtils.upload(file, realPath, file.getOriginalFilename())) {
                 msg = "上传成功！";
             } else {
                 msg = "上传失败！";
