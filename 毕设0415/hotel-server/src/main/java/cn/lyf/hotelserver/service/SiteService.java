@@ -9,4 +9,9 @@ public interface SiteService {
     List<SiteDO> listSites();
 
     int addSite(SiteDO siteDO);
+
+    List<SiteDO> listHotSites();
+
+    SiteDO getSiteById(Integer id);
+
 }

@@ -23,6 +23,8 @@
         <result column="site_address" property="siteAddress"/>
         <result column="visit_times" property="visitTimes"/>
         <result column="site_picture_path" property="sitePicturePath"/>
+        <result column="site_grade" property="siteGrade"/>
+        <result column="site_cost" property="siteCost"/>
     </resultMap>
 
 
@@ -32,18 +34,25 @@
     </insert>
     <select id="listSites" resultMap="SiteDO">
        SELECT
-         id,site_name,site_describe,site_address,visit_times,site_picture_path
+         id,site_name,site_describe,site_address,visit_times,site_picture_path,site_grade
         FROM table_tourist_spots
         WHERE status = '0'
     </select>
-<!--
-    <select id="getHotelByUserName" resultMap="hotelDO" parameterType="java.lang.String">
+
+    <!--最热门的前六个景点查询-->
+    <select id="listHotSites" resultMap="SiteDO">
         SELECT
-         room_id,room_type,room_price,room_picture_path,room_desc,booked,u.user_id
-        FROM table_room h,table_user u
-        where
-          h.user_id = u.user_id AND u.user_name = #{userName}
-    </select>-->
+        id,site_name,site_describe,site_address,visit_times,site_picture_path,site_grade
+        FROM table_tourist_spots
+        WHERE status = '0' ORDER BY visit_times DESC
+    </select>
+
+    <select id="getSiteById" resultMap="SiteDO">
+        SELECT
+        id,site_name,site_describe,site_address,visit_times,site_picture_path,site_grade
+        FROM table_tourist_spots
+        WHERE status = '0' and id = #{id}
+    </select>
 
 <!--
     <update id="updateHotel">

@@ -39,4 +39,24 @@ public class SiteServiceImpl implements SiteService {
             return flag;
         }
     }
+
+    @Override
+    public List<SiteDO> listHotSites() {
+        List<SiteDO> siteDOS = siteDao.listHotSites();
+        for (SiteDO site : siteDOS) {
+            String sitePicturePath = site.getSitePicturePath();
+            sitePicturePath = sitePicturePath.substring(0, sitePicturePath.length() - 2);
+            site.setPictures(Arrays.asList(sitePicturePath.split("!!")));
+        }
+        return siteDOS;
+    }
+
+    @Override
+    public SiteDO getSiteById(Integer id) {
+        SiteDO site = siteDao.getSiteById(id);
+        String sitePicturePath = site.getSitePicturePath();
+        sitePicturePath = sitePicturePath.substring(0, sitePicturePath.length() - 2);
+        site.setPictures(Arrays.asList(sitePicturePath.split("!!")));
+        return site;
+    }
 }

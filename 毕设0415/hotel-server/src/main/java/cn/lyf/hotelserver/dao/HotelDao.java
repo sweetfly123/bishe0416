@@ -43,7 +43,7 @@ public interface HotelDao {
      * @param hotelDO
      * @return
      */
-    int updateHotel(HotelDO hotelDO);
+    int updateRoom(HotelDO hotelDO);
     /**
      * 逻辑删除房间
      * @param roomId

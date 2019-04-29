@@ -108,7 +108,7 @@ public class HotelController {
      */
     @RequestMapping(value = "/hotel/modify", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('admin')")
-    public int updateHotel(MultipartFile file, HotelDO hotelDO) {
+    public int updateRoom(MultipartFile file, HotelDO hotelDO) {
         String realPath = path + "hotel/";
         String msg = "";
         if (file != null) {
@@ -120,7 +120,7 @@ public class HotelController {
             String fileName = file.getOriginalFilename();
             hotelDO.setRoomPicturePath(fileName);
         }
-        hotelService.updateHotel(hotelDO);
+        hotelService.updateRoom(hotelDO);
         return 1;
     }
 
@@ -143,7 +143,7 @@ public class HotelController {
         hotelDO.setGuests(guestNumber);
         hotelDO.setStartDate(startDate);
         hotelDO.setEndDate(endDate);
-        int result = hotelService.updateHotel(hotelDO);
+        int result = hotelService.updateRoom(hotelDO);
         return result;
     }
 

@@ -3,7 +3,9 @@ package cn.lyf.hotelserver.controller;
 import cn.lyf.hotelserver.entity.SiteDO;
 import cn.lyf.hotelserver.service.SiteService;
 import cn.lyf.hotelserver.util.FileUtils;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,6 +29,19 @@ public class SiteController {
         List<SiteDO> siteDOS = siteService.listSites();
         return siteDOS;
     }
+
+    @RequestMapping(value = "/hot",method = RequestMethod.GET)
+    public List<SiteDO> listHotSites(){
+        List<SiteDO> siteDOS = siteService.listHotSites();
+        return siteDOS;
+    }
+
+    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
+    public SiteDO getSiteById(@PathVariable Integer id){
+        SiteDO site = siteService.getSiteById(id);
+        return site;
+    }
+
 
     @RequestMapping(method = RequestMethod.POST)
     public String addSite(MultipartFile[] files, SiteDO siteDO){

@@ -48,7 +48,7 @@
         values(#{roomId},#{roomType},#{roomPrice},#{roomPicturePath},#{roomDescribe},#{booked},#{userId})
     </insert>
 
-    <update id="updateHotel">
+    <update id="updateRoom">
         UPDATE table_room
         <set>
             <if test="roomType != null">room_type = #{roomType},</if>

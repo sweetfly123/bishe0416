@@ -43,8 +43,8 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
-    public int updateHotel(HotelDO hotelDO) {
-        return hotelDao.updateHotel(hotelDO);
+    public int updateRoom(HotelDO hotelDO) {
+        return hotelDao.updateRoom(hotelDO);
     }
 
     @Override

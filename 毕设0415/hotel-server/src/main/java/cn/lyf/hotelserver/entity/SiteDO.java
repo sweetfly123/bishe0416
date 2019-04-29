@@ -19,6 +19,9 @@ public class SiteDO {
     private String siteAddress;
     private String visitTimes;
     private String sitePicturePath;
+    //景点评分
+    private String siteGrade;
+    private Double siteCost;
     private String status;
     private List<String> pictures;
 }

@@ -14,15 +14,19 @@
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
     <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
     <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114" href="img/apple-touch-icon-114x114-precomposed.png">
-    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144" href="img/apple-touch-icon-144x144-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114"
+          href="img/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144"
+          href="img/apple-touch-icon-144x144-precomposed.png">
 
     <!-- BASE CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
     <link href="css/style.css" rel="stylesheet">
     <link href="css/vendors.css" rel="stylesheet">
     <style>
-        .dd:before{content:"\e010"}
+        .dd:before {
+            content: "\e010"
+        }
     </style>
     <!-- YOUR CUSTOM CSS -->
     <link href="css/custom.css" rel="stylesheet">
@@ -90,32 +94,10 @@
             <div class="main_title_2">
                 <span><em></em></span>
                 <h2>特色景点</h2>
-                <p>欢迎来到此地，以下是本地区亮丽景点</p>
+                <p>Welcome，以下是热门景点</p>
             </div>
             <div id="reccomended" class="owl-carousel owl-theme">
-                <div class="item">
-                    <div class="box_grid">
-                        <figure>
-                            <a href="#0" class="wish_bt"></a>
-                            <a href="tour-detail.html"><img src="img/tour_1.jpg" class="img-fluid" alt="" width="800"
-                                                            height="533">
-                                <div class="read_more"><span>Read more</span></div>
-                            </a>
-                            <small>Historic</small>
-                        </figure>
-                        <div class="wrapper">
-                            <h3><a href="tour-detail.html">Arc Triomphe</a></h3>
-                            <p>Id placerat tacimates definitionem sea, prima quidam vim no. Duo nobis persecuti cu.</p>
-                            <span class="price">From <strong>$54</strong> /per person</span>
-                        </div>
-                        <ul>
-                            <li><i class="icon_clock_alt"></i> 1h 30min</li>
-                            <li>
-                                <div class="score"><span>Superb<em>350 Reviews</em></span><strong>8.9</strong></div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
+
             </div>
             <!-- /carousel -->
             <div class="container">
@@ -363,13 +345,22 @@
 <!-- page -->
 
 
-
 <div id="toTop"></div><!-- Back to top button -->
 
 <!-- DATEPICKER  -->
 <script>
     $(function () {
-        'use strict';
+
+    });
+</script>
+<!-- COMMON SCRIPTS -->
+<script>
+    window.onload = function () {
+        var filescript = document.createElement("script");
+        filescript.type = "text/javascript";
+        filescript.src = "/static/resources/js/main.js";
+        document.getElementsByTagName('body')[0].appendChild(filescript);
+
         $('input[name="dates"]').daterangepicker({
             autoUpdateInput: false,
             locale: {
@@ -382,14 +373,21 @@
         $('input[name="dates"]').on('cancel.daterangepicker', function (ev, picker) {
             $(this).val('');
         });
-    });
+
+        $('[data-loader="circle-side"]').fadeOut(); // will first fade out the loading animation
+        $('#preloader').delay(350).fadeOut('slow'); // will fade out the white DIV that covers the website.
+        $('body').delay(350);
+        $('.hero_in h1,.hero_in form').addClass('animated');
+        $('.hero_single, .hero_in').addClass('start_bg_zoom');
+        $(window).scroll();
+    }
 </script>
-<!-- COMMON SCRIPTS -->
-<script src="js/common_scripts.js"></script>
-<script src="js/main.js"></script>
+<!--<script src="js/common_scripts.js"></script>
+<script src="js/main.js"></script>-->
 <script src="assets/validate.js"></script>
 <script src="js/bootstrap.js"></script>
-<div class="modal fade" id="signLogin" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false" aria-labelledby="exampleModalLabel">
+<div class="modal fade" id="signLogin" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false"
+     aria-labelledby="exampleModalLabel">
 
 </div>
 
@@ -401,7 +399,7 @@
         $("#signLogin").load("loginmodel.html");
     });
     $(function () {
-        $("#userLogo").attr("src","img/2_carousel.jpg");
+        $("#userLogo").attr("src", "img/2_carousel.jpg");
     })
 </script>
 
@@ -409,28 +407,8 @@
 <script>
     $(function () {
         var token = window.sessionStorage.getItem("token");
-        var userName = window.sessionStorage.getItem("userName");
-        var role;
         $.ajax({
-            url: "http://localhost:8002/static/user/login",
-            type: "POST",
-            async: false,
-            dataType: "json",
-            data: {"userName": userName},
-            beforeSend: function (e) {
-                e.setRequestHeader("Authorization", "bearer " + token);
-            },
-            success: function (data) {
-                $("#userh3").text("用户：" + data.userName);
-                $("#usersmall3").text("身份：" + data.role);
-                role = data.role;
-                currentUserId = data.userId;
-                window.localStorage.setItem("currentUserId", currentUserId);
-                window.localStorage.setItem("role", role);
-            }
-        });
-        $.ajax({
-            url: "http://localhost:8002/hotel/hotels/hotel",
+            url: "http://localhost:8002/hotel/sites/hot",
             type: "GET",
             async: false,
             dataType: "json",
@@ -438,40 +416,35 @@
                 e.setRequestHeader("Authorization", "bearer " + token);
             },
             success: function (data) {
+                var context = "";
                 var i = 0;
-                var type;
-                var context = "<div class=\"col-xl-4 col-lg-6 col-md-6 isotope-item popular\">\n" +
-                    "<div class=\"box_grid\">\n" +
-                    "<figure>\n" +
-                    "<a href=\"#0\" class=\"wish_bt\"></a>";
-
                 for (i in data) {
-                    if (data[i].roomType == "1") {
-                        type = "单人";
-                    } else {
-                        type = "双人";
-                    }
-                    context += "<a href=\"javascript:void(0)\" onclick='booking(" + data[i].roomId + ")'><img src=\"" + data[i].roomPicturePath + "\" class=\"img-fluid\" alt=\"\" width=\"800\" height=\"533\"><div class=\"read_more\"><span>预订</span></div></a>\n" +
-                        "<small>峰旗旅游</small>\n" +
+                    context = "<div class=\"item\">" +
+                        "<div class=\"box_grid\">" +
+                        "<figure>" +
+                        "<a href=\"#0\" class=\"wish_bt\"></a>" +
+                        "<a href=\"tour-detail.html?siteId=" + data[i].id + "\"><img src=\"sites/" + data[i].pictures[0] + "\" class=\"img-fluid\" alt=\"\" width=\"800\" height=\"533\">" +
+                        "<div class=\"read_more\"><span>查看</span></div></a>" +
                         "</figure>" +
-                        "<div class=\"wrapper\">\n" +
-                        "<div class=\"cat_star\"><i class=\"icon_star\"></i><i class=\"icon_star\"></i><i class=\"icon_star\"></i><i class=\"icon_star\"></i></div>\n" +
-                        "<h3><a href=\"hotelDO-detail.html\">" + type + "</a></h3>\n" +
-                        "<p style='width:280px;height:60px;line-height:30px;text-overflow:ellipsis;overflow:hidden;display:block;'>"+data[i].roomDescribe+"</p>\n" +
-                        "<span class=\"price\">价格 <strong>￥" + data[i].roomPrice + "</strong> /一晚</span>\n" +
+                        "<div class=\"wrapper\">" +
+                        "<h3><a href=\"tour-detail.html\">" + data[i].siteName + "</a></h3>" +
+                        "<p>" + data[i].siteDescribe + "</p>" +
                         "</div>" +
-                        "<ul>\n" +
-                        "<li><i class=\"ti-eye\"></i> 164 views</li>\n" +
-                        "<li><div class=\"score\"><span>Superb<em>350 Reviews</em></span><strong>8.9</strong></div></li>\n" +
-                        "</ul>\n" +
-                        "</div>\n" +
+                        "<ul>" +
+                        "<li><em>" + data[i].visitTimes + "</em>人浏览过</li>" +
+                        "<li>" +
+                        "<div class=\"score\"><strong>8.9</strong></div>" +
+                        "</li>" +
+                        "</ul>" +
+                        "</div>" +
                         "</div>";
-                    $("#hotelcontainerrow").append(context);
-                    context = "<div class=\"col-xl-4 col-lg-6 col-md-6 isotope-item popular\">\n" +
-                        "<div class=\"box_grid\">\n" +
-                        "<figure>\n" +
-                        "<a href=\"#0\" class=\"wish_bt\"></a>";
+                    $("#reccomended").append(context);
+                    context = "";
                 }
+                var filescript1 = document.createElement("script");
+                filescript1.type = "text/javascript";
+                filescript1.src = "/static/resources/js/common_scripts.js";
+                document.getElementsByTagName('body')[0].appendChild(filescript1);
             }
         });
     });
