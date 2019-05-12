@@ -19,10 +19,14 @@ public class SiteServiceImpl implements SiteService {
     @Override
     public List<SiteDO> listSites() {
         List<SiteDO> siteDOS = siteDao.listSites();
-        for (SiteDO site : siteDOS) {
-            String sitePicturePath = site.getSitePicturePath();
-            sitePicturePath = sitePicturePath.substring(0, sitePicturePath.length() - 2);
-            site.setPictures(Arrays.asList(sitePicturePath.split("!!")));
+        if (siteDOS.size() > 0) {
+            for (SiteDO site : siteDOS) {
+                String sitePicturePath = site.getSitePicturePath();
+                if (sitePicturePath != null && !("".equals(sitePicturePath))) {
+                    sitePicturePath = sitePicturePath.substring(0, sitePicturePath.length() - 2);
+                    site.setPictures(Arrays.asList(sitePicturePath.split("!!")));
+                }
+            }
         }
         return siteDOS;
     }
@@ -43,10 +47,12 @@ public class SiteServiceImpl implements SiteService {
     @Override
     public List<SiteDO> listHotSites() {
         List<SiteDO> siteDOS = siteDao.listHotSites();
-        for (SiteDO site : siteDOS) {
-            String sitePicturePath = site.getSitePicturePath();
-            sitePicturePath = sitePicturePath.substring(0, sitePicturePath.length() - 2);
-            site.setPictures(Arrays.asList(sitePicturePath.split("!!")));
+        if (siteDOS.size() > 0) {
+            for (SiteDO site : siteDOS) {
+                String sitePicturePath = site.getSitePicturePath();
+                sitePicturePath = sitePicturePath.substring(0, sitePicturePath.length() - 2);
+                site.setPictures(Arrays.asList(sitePicturePath.split("!!")));
+            }
         }
         return siteDOS;
     }
@@ -58,5 +64,28 @@ public class SiteServiceImpl implements SiteService {
         sitePicturePath = sitePicturePath.substring(0, sitePicturePath.length() - 2);
         site.setPictures(Arrays.asList(sitePicturePath.split("!!")));
         return site;
+    }
+
+    @Override
+    public int deleteSite(Integer id) {
+        return siteDao.deleteSite(id);
+    }
+
+    @Override
+    public int updateSite(SiteDO siteDO) {
+        return siteDao.updateSite(siteDO);
+    }
+
+    @Override
+    public List<SiteDO> listSitesBySearch(String word) {
+        List<SiteDO> siteDOS = siteDao.listSitesBySearch(word);
+        if (siteDOS.size() > 0) {
+            for (SiteDO site : siteDOS) {
+                String sitePicturePath = site.getSitePicturePath();
+                sitePicturePath = sitePicturePath.substring(0, sitePicturePath.length() - 2);
+                site.setPictures(Arrays.asList(sitePicturePath.split("!!")));
+            }
+        }
+        return siteDOS;
     }
 }

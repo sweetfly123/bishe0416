@@ -1,0 +1,166 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport"
+          content="width=device-width,initial-scale=1,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="Cache-Control" content="no-siteapp"/>
+    <title>景点总览</title>
+</head>
+<link rel="stylesheet" href="../assets/css/bootstrap.min.css"/>
+<link rel="stylesheet" href="../assets/font-awesome/4.2.0/css/font-awesome.min.css"/>
+
+<link rel="stylesheet" href="../assets/fonts/fonts.googleapis.com.css"/>
+
+<link rel="stylesheet" href="../assets/css/ace.min.css"/>
+
+<link rel="stylesheet" href="../assets/css/ace-part2.min.css"/>
+<link rel="stylesheet" href="../assets/css/ace-rtl.min.css"/>
+
+<!--layerui-->
+<link rel="stylesheet" href="../layerui/css/layui.css">
+<script src="../layerui/layui.js"></script>
+
+<link rel="stylesheet" href="../assets/css/ace-ie.min.css"/>
+<script src="../assets/js/jquery.2.1.1.min.js"></script>
+<script src="../assets/js/bootstrap.min.js"></script>
+<script src="../assets/js/html5shiv.min.js"></script>
+<script src="../assets/js/respond.min.js"></script>
+<link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
+<script src="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/js/bootstrap.min.js"></script>
+
+<!--列表-->
+<link rel="stylesheet" href="../li/css/jquery.paginate.css"/>
+<link rel="stylesheet" href="../li/css/jquery.yhhDataTable.css"/>
+
+<script type="text/javascript" src="../li/js/jquery.paginate.js"></script>
+<script type="text/javascript" src="../li/js/jquery.yhhDataTable.js"></script>
+<script type="text/javascript" src="../li/js/index.js"></script>
+
+<style>
+    .layui-layer-lan1 .layui-layer-title {
+        background: #33aecc;
+        color: #fff;
+        border: none;
+    }
+
+    .ellipsis {
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+</style>
+<script>
+    var token = window.localStorage.getItem("token");
+    $(function () {
+        $.ajax({
+            url: "http://localhost:8002/hotel/food",
+            type: "GET",
+            async: false,
+            dataType: "json",
+            beforeSend: function (e) {
+                e.setRequestHeader("Authorization", "bearer " + token);
+            },
+            success: function (data) {
+                var images = "";
+                var i = 0;
+                var context = "";
+                for (i in data) {
+                    var pictureIndex = 0;
+                    for (pictureIndex in data[i].pictures) {
+                        images += "<img style=\"margin-right: 10px;width: 60px;height: 60px;\" src=\"http://localhost:8002/hotel/resources/food/" + data[i].pictures[pictureIndex] + "\">";
+                    }
+
+                    context = "<tr><td>" + data[i].foodName + "</td>" +
+                        "<td style='width: 20%;' class='ellipsis'>" + data[i].foodDescribe + "</td>" +
+                        "<td>" + data[i].foodPrice + "</td>" +
+                        "<td>" + images + "</td>" +
+                        "<td>" + data[i].foodAddress + "</td>" +
+                        "<td>" + data[i].siteName + "</td>" +
+                        "<td>" + "<button onclick=\"siteEdit(" + data[i].id + ")\" type=\"button\" class=\"glyphicon glyphicon-edit btn-xs btn-primary\" style=\"border: none;\">" +
+                        "</button>&nbsp;" +
+                        "<button onclick=\"siteDelete(" + data[i].id + ")\" type=\"button\" class=\"glyphicon glyphicon-trash btn-xs btn-danger\" style=\"border: none;\">" +
+                        "</button>" + "</td>" +
+                        "</tr>";
+                    $("#tb").append(context);
+                    context = "";
+                    images = "";
+                }
+            }
+        });
+    });
+
+    function siteEdit(foodId) {
+        window.location.href = "http://localhost:8002/hotel/resources/page/editFood.html?foodId=" + foodId;
+    }
+
+    function siteDelete(foodId) {
+        layui.use(['layer', 'form'], function () {
+            var layer = layui.layer
+                , form = layui.form;
+            layer.open({
+                title: '提示',
+                offset: '150px',
+//                background: '#33aecc',
+//                style: 'background: rgba(216,100,125,0.9); color:#fff; border:none;',
+                skin: 'layui-layer-lan1',
+                content: '确定删除景点信息？',
+                btn: ['确定', '取消'],
+                yes: function (index, layero) {
+
+                    $.ajax({
+                        url: "http://localhost:8002/hotel/food/" + foodId,
+                        type: "DELETE",
+                        async: false,
+                        dataType: "json",
+                        beforeSend: function (e) {
+                            e.setRequestHeader("Authorization", "bearer " + token);
+                        },
+                        success: function (data) {
+                            layer.open({
+                                title: '提示',
+                                offset: '150px',
+                                skin: 'layui-layer-lan1',
+                                content: '删除成功',
+                                btn: ['确定'],
+                                yes: function (index, layero) {
+                                    window.location.href = "http://localhost:8002/hotel/resources/page/allFood.html";
+                                }
+                            });
+                        }
+                    });
+                },
+                cancel: function () {
+                    //右上角关闭回调
+                }
+            });
+        });
+    }
+</script>
+<style>
+
+    td {
+        height: 50px;
+        text-align: center;
+        line-height: inherit;
+    }
+</style>
+<body>
+<table id="tb">
+    <thead>
+    <tr>
+        <th>食物名称</th>
+        <th>食物简介</th>
+        <th>食物价格</th>
+        <th>食物图片</th>
+        <th>地址</th>
+        <th>所在景点</th>
+        <th>操作</th>
+    </tr>
+    </thead>
+    <tbody>
+    </tbody>
+</table>
+
+</body>
+</html>

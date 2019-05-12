@@ -6,6 +6,7 @@ import cn.lyf.hotelserver.service.HotelService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -23,18 +24,59 @@ public class HotelServiceImpl implements HotelService {
     private HotelDao hotelDao;
 
     @Override
-    public HotelDO getHotelByHotelId(String roomId) {
-        return hotelDao.getHotelByHotelId(roomId);
+    public HotelDO getHotelByHotelId(String roomId,String houseId) {
+        HotelDO room = hotelDao.getHotelByHotelId(roomId,houseId);
+        String housePicturePath = room.getRoomPicturePath();
+        if (housePicturePath != null && !("".equals(housePicturePath))) {
+            housePicturePath = housePicturePath.substring(0, housePicturePath.length() - 2);
+            room.setPictures(Arrays.asList(housePicturePath.split("!!")));
+        }
+        return room;
     }
 
     @Override
     public List<HotelDO> findAllHotels() {
-        return hotelDao.findAllHotels();
+        List<HotelDO> rooms = hotelDao.findAllHotels();
+        if (rooms.size() > 0) {
+            for (HotelDO house : rooms) {
+                String path = house.getRoomPicturePath(); //house !=""
+                if (path != null && !("".equals(path))) {
+                    path = path.substring(0, path.length() - 2);
+                    house.setPictures(Arrays.asList(path.split("!!")));
+                }
+            }
+        }
+        return rooms;
+    }
+
+    @Override
+    public List<HotelDO> findAllHotelsByCondition(Integer houseId) {
+        List<HotelDO> rooms = hotelDao.findAllHotelsByCondition(houseId);
+        if (rooms.size() > 0) {
+            for (HotelDO house : rooms) {
+                String path = house.getRoomPicturePath(); //house !=""
+                if (path != null && !("".equals(path))) {
+                    path = path.substring(0, path.length() - 2);
+                    house.setPictures(Arrays.asList(path.split("!!")));
+                }
+            }
+        }
+        return rooms;
     }
 
     @Override
     public List<HotelDO> getHotelByUserName(String userName) {
-        return hotelDao.getHotelByUserName(userName);
+        List<HotelDO> rooms = hotelDao.getHotelByUserName(userName);
+        if (rooms.size() > 0) {
+            for (HotelDO house : rooms) {
+                String path = house.getRoomPicturePath(); //house !=""
+                if (path != null && !("".equals(path))) {
+                    path = path.substring(0, path.length() - 2);
+                    house.setPictures(Arrays.asList(path.split("!!")));
+                }
+            }
+        }
+        return rooms;
     }
 
     @Override
@@ -55,6 +97,17 @@ public class HotelServiceImpl implements HotelService {
     @Override
     public HotelDO getHotelOrderInfoByHotelId(String roomId) {
         return hotelDao.getHotelOrderInfoByHotelId(roomId);
+    }
+
+    @Override
+    public HotelDO getHotelByRoomId(String roomId) {
+        HotelDO room = hotelDao.getHotelByRoomId(roomId);
+        String housePicturePath = room.getRoomPicturePath();
+        if (housePicturePath != null && !("".equals(housePicturePath))) {
+            housePicturePath = housePicturePath.substring(0, housePicturePath.length() - 2);
+            room.setPictures(Arrays.asList(housePicturePath.split("!!")));
+        }
+        return room;
     }
 
 }

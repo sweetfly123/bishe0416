@@ -37,11 +37,18 @@ public class HotelController {
      * @param roomId
      * @return
      */
-    @RequestMapping(value = "/hotel/{roomId}", method = RequestMethod.GET)
-    public HotelDO getHotelByHotelId(@PathVariable("roomId") String roomId) {
-        HotelDO hotelDO = hotelService.getHotelByHotelId(roomId);
+    @RequestMapping(value = "/hotel/{roomId}/{houseId}", method = RequestMethod.GET)
+    public HotelDO getHotelByHotelId(@PathVariable("roomId") String roomId,@PathVariable("houseId") String houseId) {
+        HotelDO hotelDO = hotelService.getHotelByHotelId(roomId,houseId);
         return hotelDO;
     }
+
+    @RequestMapping(value = "/hotel/room/{roomId}", method = RequestMethod.GET)
+    public HotelDO getHotelByHotelId(@PathVariable("roomId") String roomId) {
+        HotelDO hotelDO = hotelService.getHotelByRoomId(roomId);
+        return hotelDO;
+    }
+
 
     /**
      * 查询所有房间信息
@@ -54,6 +61,13 @@ public class HotelController {
         List<HotelDO> list = hotelService.findAllHotels();
         return list;
     }
+
+    @RequestMapping(value = "/hotel/house/{houseId}", method = RequestMethod.GET)
+    public List<HotelDO> findAllHotelsByCondition(@PathVariable("houseId") Integer houseId) {
+        List<HotelDO> list = hotelService.findAllHotelsByCondition(houseId);
+        return list;
+    }
+
 
     /**
      * 根据用户名查询房间
@@ -69,31 +83,27 @@ public class HotelController {
     /**
      * 增加房间
      *
-     * @param file
+     * @param files
      * @param hotelDO
      * @return
      */
     @RequestMapping(value = "/hotel", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('admin')")
-    public int addHotel(MultipartFile file, HotelDO hotelDO) {
-        //String localPath =getRequest().getServletContext().getRealPath("/static");
-        // 要上传的目标文件存放路径
-//        File filedir = new File(path);
-//        if (!filedir.exists()) {
-//            filedir.mkdirs();
-//        }
-        //String localPath = "D:/DevelopPhotos";
-        // 上传成功或者失败的提示
+    public int addHotel(MultipartFile[] files, HotelDO hotelDO) {
         String realPath = path + "hotel/";
         String msg = "";
-        if (FileUtils.upload(file, realPath, file.getOriginalFilename())) {
-            // 上传成功，给出页面提示
-            msg = "上传成功！";
-        } else {
-            msg = "上传失败！";
+        String picturePaths = "";
+        if(files != null){
+            for (MultipartFile file : files) {
+                if (FileUtils.upload(file, realPath, file.getOriginalFilename())) {
+                    msg = "上传成功！";
+                } else {
+                    msg = "上传失败！";
+                }
+                picturePaths += file.getOriginalFilename() + "!!";
+            }
         }
-        String fileName = file.getOriginalFilename();
-        hotelDO.setRoomPicturePath(fileName);
+        hotelDO.setRoomPicturePath(picturePaths);
         // hotelDO.setRoomPicturePath(resourceLoader.getResource("file:" + path + fileName));
         hotelService.addHotel(hotelDO);
         return 1;
@@ -108,18 +118,21 @@ public class HotelController {
      */
     @RequestMapping(value = "/hotel/modify", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('admin')")
-    public int updateRoom(MultipartFile file, HotelDO hotelDO) {
+    public int updateRoom(MultipartFile[] files, HotelDO hotelDO) {
         String realPath = path + "hotel/";
         String msg = "";
-        if (file != null) {
-            if (FileUtils.upload(file, realPath, file.getOriginalFilename())) {
-                msg = "上传成功！";
-            } else {
-                msg = "上传失败！";
+        String picturePaths = "";
+        if(files != null){
+            for (MultipartFile file : files) {
+                if (FileUtils.upload(file, realPath, file.getOriginalFilename())) {
+                    msg = "上传成功！";
+                } else {
+                    msg = "上传失败！";
+                }
+                picturePaths += file.getOriginalFilename() + "!!";
             }
-            String fileName = file.getOriginalFilename();
-            hotelDO.setRoomPicturePath(fileName);
         }
+        hotelDO.setRoomPicturePath(picturePaths);
         hotelService.updateRoom(hotelDO);
         return 1;
     }

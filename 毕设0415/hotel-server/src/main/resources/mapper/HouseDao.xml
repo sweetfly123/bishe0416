@@ -1,0 +1,64 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.lyf.hotelserver.dao.HouseDao">
+    <resultMap id="house" type="cn.lyf.hotelserver.entity.HouseDO" autoMapping="true">
+        <id column="id" property="Id"/>
+        <result column="hotel_name" property="hotelName"/>
+        <result column="hotel_describe" property="hotelDescribe"/>
+        <result column="hotel_provide" property="hotelProvide"/>
+        <result column="hotel_picture_path" property="hotelPicturePath"/>
+        <result column="hotel_address" property="hotelAddress"/>
+        <result column="site_id" property="siteId"/>
+        <result column="site_name" property="siteName"/>
+        <result column="evaluate" property="evaluate"/>
+    </resultMap>
+    <select id="getHouseById" resultMap="house" parameterType="java.lang.Integer">
+    SELECT
+    id,hotel_name,hotel_describe,hotel_provide,hotel_picture_path,hotel_address,site_id,evaluate
+    FROM table_hotel th
+    where
+    th.id = #{Id}
+</select>
+
+    <select id="findAllHouses" resultMap="house">
+       SELECT
+        th.id,hotel_name,hotel_describe,hotel_provide,hotel_picture_path,hotel_address,site_id,site_name,evaluate
+        FROM table_hotel th,table_tourist_spots tts
+        WHERE
+        th.site_id = tts.id
+    </select>
+
+    <select id="findAllHousesBySiteId" resultMap="house">
+        SELECT
+        th.id,hotel_name,hotel_describe,hotel_provide,hotel_picture_path,hotel_address,site_id,site_name,evaluate
+        FROM table_hotel th,table_tourist_spots tts
+        WHERE
+        th.site_id = tts.id AND th.site_id = #{siteId}
+    </select>
+
+    <insert id="addHouse" useGeneratedKeys="true" keyProperty="id">
+        insert into table_hotel(hotel_name,hotel_describe,hotel_provide,hotel_picture_path,hotel_address,site_id,evaluate)
+        values(#{hotelName},#{hotelDescribe},#{hotelProvide},#{hotelPicturePath},#{hotelAddress},#{siteId},#{evaluate})
+    </insert>
+
+    <update id="updateHouse">
+        UPDATE table_hotel
+        <set>
+            <if test="hotelName != null">hotel_name = #{hotelName},</if>
+            <if test="hotelDescribe != null">hotel_describe = #{hotelDescribe},</if>
+            <if test="hotelProvide != null">hotel_provide = #{hotelProvide},</if>
+            <if test="hotelPicturePath != null and hotelPicturePath != ''">hotel_picture_path = #{hotelPicturePath},</if>
+            <if test="hotelAddress != null">hotel_address = #{hotelAddress},</if>
+            <if test="siteId != null">site_id = #{siteId},</if>
+            <if test="evaluate != null">evaluate = #{evaluate}</if>
+        </set>
+        where id = #{Id}
+    </update>
+    <delete id="deleteHouse" parameterType="java.lang.Integer">
+        DELETE
+        FROM table_hotel
+        where id = #{Id}
+    </delete>
+</mapper>

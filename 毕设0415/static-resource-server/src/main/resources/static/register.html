@@ -39,7 +39,7 @@
                 return false;
             }
             //用户名只能是15位以下的字母或数字
-            var regExp = /^[\w\u4E00-\u9FA5\uF900-\uFA2D]*$/;
+            var regExp = /^[a-zA-Z0-9]{4,10}$/;
             if (!regExp.test(username)) {
                 alert("用户名至少包含3位字符");
                 return false;
@@ -95,7 +95,7 @@
 		</figure>
 		<form autocomplete="off" id="register_form">
 			<div class="form-group">
-				<label>姓名</label>
+				<label>用户名</label>
 				<input id="username" class="form-control" type="text">
 				<i class="ti-user"></i>
 			</div>

@@ -34,7 +34,7 @@ public class ResourceServerConfig extends ResourceServerConfigurerAdapter {
                 .authorizeRequests()
                 .anyRequest().authenticated()
                 .and()
-                .authorizeRequests().antMatchers("/favicon.ico", "/static/**","/resources/**","/**/*.html", "/static/css_pre/*.css_pre", "/static/images_pre/*.*","/user/regist/**","/hotel/addHotel","/hotel/ddd").permitAll()
+                .authorizeRequests().antMatchers("/favicon.ico", "/static/**","/resources/**","/**/*.html", "/static/css_pre/*.css_pre", "/static/images_pre/*.*","/users/regist/**","/hotel/addHotel","/hotel/ddd","/auth/users/register","/auth/**","/users/register").permitAll()
                 .and()
                 .httpBasic();
     }

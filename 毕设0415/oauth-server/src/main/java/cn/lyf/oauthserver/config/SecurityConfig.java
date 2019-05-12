@@ -58,6 +58,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     public void configure(WebSecurity web) throws Exception {
         // 设置不拦截规则
-        web.ignoring().antMatchers("/v2/**", "/webjars/**", "/static/**","/favicon.ico");
+        web.ignoring().antMatchers("/v2/**", "/webjars/**", "/static/**","/favicon.ico","/auth/users/register","/users/register");
     }
 }

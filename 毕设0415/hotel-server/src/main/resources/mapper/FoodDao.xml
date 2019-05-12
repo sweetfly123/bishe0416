@@ -1,0 +1,71 @@
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="cn.lyf.hotelserver.dao.FoodDao">
+    <resultMap id="food" type="cn.lyf.hotelserver.entity.FoodDO" autoMapping="true">
+        <id column="id" property="Id"/>
+        <result column="food_name" property="foodName"/>
+        <result column="food_describe" property="foodDescribe"/>
+        <result column="food_price" property="foodPrice"/>
+        <result column="food_picture_path" property="foodPicturePath"/>
+        <result column="food_address" property="foodAddress"/>
+        <result column="site_id" property="siteId"/>
+        <result column="site_name" property="siteName"/>
+    </resultMap>
+
+    <select id="getFoodById" resultMap="food" parameterType="java.lang.Integer">
+        SELECT
+        tf.id,food_name,food_describe,food_price,food_picture_path,food_address,site_id
+        FROM table_food tf
+        where
+        tf.id = #{Id}
+    </select>
+
+
+    <select id="findAllFoods" resultMap="food">
+       SELECT
+        tf.id,food_name,food_describe,food_price,food_picture_path,food_address,site_id,site_name
+        FROM table_food tf,table_tourist_spots tts
+        WHERE
+        tf.site_id = tts.id
+    </select>
+    <select id="findAllFoodsBySearch" resultMap="food">
+        SELECT
+        tf.id,food_name,food_describe,food_price,food_picture_path,food_address,site_id,site_name
+        FROM table_food tf,table_tourist_spots tts
+        WHERE
+        tf.site_id = tts.id AND food_name LIKE CONCAT(CONCAT('%', #{word}), '%');
+    </select>
+
+    <select id="findAllFoodsBySiteId" resultMap="food">
+        SELECT
+        tf.id,food_name,food_describe,food_price,food_picture_path,food_address,site_id,site_name
+        FROM table_food tf,table_tourist_spots tts
+        WHERE
+        tf.site_id = tts.id AND tf.site_id = #{siteId}
+    </select>
+
+    <insert id="addFood" useGeneratedKeys="true" keyProperty="id">
+        insert into table_food(food_name,food_describe,food_price,food_address,food_picture_path,site_id)
+        values(#{foodName},#{foodDescribe},#{foodPrice},#{foodAddress},#{foodPicturePath},#{siteId})
+    </insert>
+
+    <update id="updateFood">
+        UPDATE table_food
+        <set>
+            <if test="foodName != null">food_name = #{foodName},</if>
+            <if test="foodDescribe != null">food_describe = #{foodDescribe},</if>
+            <if test="foodPrice != null">food_price = #{foodPrice},</if>
+            <if test="foodPicturePath != null and foodPicturePath != ''">food_picture_path = #{foodPicturePath},</if>
+            <if test="foodAddress != null">food_address = #{foodAddress},</if>
+            <if test="siteId != null">site_id = #{siteId}</if>
+        </set>
+        where id = #{Id}
+    </update>
+    <delete id="deleteFood" parameterType="java.lang.Integer">
+        DELETE
+        FROM table_food
+        where id = #{Id}
+    </delete>
+</mapper>

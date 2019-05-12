@@ -42,8 +42,8 @@ public class UserController {
         userDO.setUserName(userName);
         userDO.setPassword(new BCryptPasswordEncoder().encode(password));
         userDO.setEmail(email);
-        if (role == ""){
-            userDO.setRole("1");
+        if (role == "" || role == null){
+            userDO.setRole("2");
         }else {
             userDO.setRole(role);
         }

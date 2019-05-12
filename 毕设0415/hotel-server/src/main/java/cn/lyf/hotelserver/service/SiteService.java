@@ -14,4 +14,9 @@ public interface SiteService {
 
     SiteDO getSiteById(Integer id);
 
+    int deleteSite(Integer id);
+
+    int updateSite(SiteDO siteDO);
+
+    List<SiteDO> listSitesBySearch(String word);
 }

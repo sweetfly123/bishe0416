@@ -38,39 +38,19 @@
             token = null;
         //判断用户名密码是否为空
         if (username == "") {
-            $.pt({
-                target: $("#email"),
-                position: 'r',
-                align: 't',
-                width: 'auto',
-                height: 'auto',
-                content: "用户名不能为空"
-            });
-            flag = true;
+            alert("用户名不能为空");
+            return false;
         }
-        if (password == "") {
-            $.pt({
-                target: $("#password"),
-                position: 'r',
-                align: 't',
-                width: 'auto',
-                height: 'auto',
-                content: "密码不能为空"
-            });
-            flag = true;
-        }
-        //用户名只能是15位以下的字母或数字
-        var regExp = new RegExp("^[a-zA-Z0-9_]{1,15}$");
+
+        var regExp = /^[a-zA-Z0-9]{4,10}$/;
         if (!regExp.test(username)) {
-            $.pt({
-                target: $("#email"),
-                position: 'r',
-                align: 't',
-                width: 'auto',
-                height: 'auto',
-                content: "用户名必须为15位以下的字母或数字"
-            });
-            flag = true;
+            alert("用户名至少包含4位字符");
+            return false;
+        }
+
+        if (password == "") {
+            alert("密码不能为空");
+            return false;
         }
         $.ajax({
             url: "http://localhost:8002/auth/oauth/token",
@@ -83,7 +63,7 @@
             },
             success: function (data) {
                 token = data.access_token;
-                localStorage.setItem("token", token);    //将token信息存储到前端
+//                localStorage.setItem("token", token);    //将token信息存储到前端
             }
         });
 
@@ -116,7 +96,7 @@
         <hr/>
         <form>
             <div class="form-group">
-                <label>邮箱</label>
+                <label>用户名</label>
                 <input type="email" class="form-control" name="email" id="email">
                 <i class="icon_mail_alt"></i>
             </div>

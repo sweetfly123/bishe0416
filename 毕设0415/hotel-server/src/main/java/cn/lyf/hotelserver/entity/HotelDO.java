@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 /**
  * @Title: HotelDO
  * @Description: 酒店实体类
@@ -20,6 +22,10 @@ public class HotelDO {
      房间号
      */
     private String roomId;
+    /**
+     * 酒店Id
+     */
+    private String hotelId;
     /**
      类型
      */
@@ -60,4 +66,8 @@ public class HotelDO {
      到期时间
      */
     private String endDate;
+
+    private List<String> pictures;
+
+    private String hotelName;
 }

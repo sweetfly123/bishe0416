@@ -1,33 +1,34 @@
 <!-- COMMON SCRIPTS -->
 <script src="js/jquery-2.2.4.min.js"></script>
 <script>
-  /*  $(function() {
-        var token = window.sessionStorage.getItem("token");
-        var userId;
-        $.ajax({
-            url: "http://localhost:8002/auth/users/user/",
-            type: "GET",
-            async: false,
-            dataType: "json",
-            beforeSend: function (e) {
-                e.setRequestHeader("Authorization", "bearer " + token);
-            },
-            success: function (data) {
-            }
-        });
-        if (book == true) {
-            alert("房间已被预订");
-        } else {
-            window.location.href = "./hotel-detail.html?roomId=" + roomId;
-        }
-    });*/
     $("#userLogo").attr("src","img/about_1.jpg");
+
+    var token = window.sessionStorage.getItem("token");
+
+    $.ajax({
+        url: "http://localhost:8002/auth/users/user",
+        type: "GET",
+        async: false,
+        dataType: "json",
+        beforeSend: function (e) {
+            e.setRequestHeader("Authorization", "bearer " + token);
+        },
+        success: function (data) {
+            $("#headUserName").html("<span>"+data.principal.userEntity.userName+"</span>");
+            $("#headUserId").val(data.principal.userEntity.userId);
+        }
+    });
+    
+    function zhuxiao() {
+        sessionStorage.clear();
+        window.location.href="./login.html";
+    }
 </script>
 <!--<div id="preloader">
     <div data-loader="circle-side"></div>
 </div>-->
 <div id="logo">
-    <a href="index.html">
+    <a  href="index.html">
         <img src="img/logo.png" width="150" height="36" data-retina="true" alt="" class="logo_normal">
         <img src="img/logo_sticky.png" width="150" height="36" data-retina="true" alt="" class="logo_sticky">
     </a>
@@ -38,20 +39,21 @@
     <li><a href="wishlist.html" class="wishlist_bt_top" title="Your wishlist">Your wishlist</a></li>
 </ul>-->
 <ul id="top_menu">
-    <li><a href="cart-1.html" class="cart-menu-btn" title="Cart"><strong>4</strong></a></li>
     <li>
         <div class="dropdown dropdown-user">
             <a href="#" class="logged" data-toggle="dropdown" title="Logged"><img id="userLogo" src="img/blog-2.jpg" alt=""></a>
             <div class="dropdown-menu">
                 <ul>
-                    <li><a data-toggle="modal" data-target="#signLogin" id="sig1n-in">登录</a></li>
-                    <li><a href="#">注销</a></li>
+                    <li><a href="login.html" id="sig1n-in">登录</a></li>
+                    <li><a href="#" onclick="zhuxiao()">注销</a></li>
                     <li><a href="#">修改信息</a></li>
                 </ul>
             </div>
         </div>
     </li>
-    <li><a href="wishlist.html" class="wishlist_bt_top" title="Your wishlist">Your wishlist</a></li>
+    <li id="headUserName" style="line-height: 3;"></li>
+    <li id="headUserId" style="display: none;"></li>
+
 </ul>
 <!-- /top_menu -->
 <a href="#menu" class="btn_mobile">
@@ -65,83 +67,28 @@
     <ul>
         <li><span><a href="#0">首页</a></span>
             <ul>
-                <li><a href="index.html">Home version 1</a></li>
-                <li><a href="index-2.html">Home version 2</a></li>
-                <li><a href="index-3.html">Home version 3</a></li>
-                <li><a href="index-4.html">Home version 4</a></li>
-                <li><a href="index-5.html">Home version 5</a></li>
-                <li><a href="index-6.html">With Cookie bar (EU law)</a></li>
-                <li><a href="index-7.html">Home version 7</a></li>
+                <li><a href="index.html">峰旗旅游</a></li>
             </ul>
         </li>
         <li><span><a href="#0">旅游</a></span>
             <ul>
-                <li><a href="tours-grid-isotope.html">Tours grid isotope</a></li>
-                <li><a href="tours-grid-sidebar.html">Tours grid sidebar</a></li>
-                <li><a href="tours-grid-sidebar-2.html">Tours grid sidebar 2</a></li>
-                <li><a href="tours-grid.html">Tours grid simple</a></li>
-                <li><a href="tours-list-isotope.html">Tours list isotope</a></li>
-                <li><a href="tours-list-sidebar.html">Tours list sidebar</a></li>
-                <li><a href="tours-list-sidebar-2.html">Tours list sidebar 2</a></li>
-                <li><a href="tours-list.html">Tours list simple</a></li>
-                <li><a href="tour-detail.html">Tour detail</a></li>
+                <li><a href="tours-grid-isotope.html">旅游景点</a></li>
             </ul>
         </li>
         <li><span><a href="#0">酒店</a></span>
             <ul>
-                <li><a href="hotels-grid-isotope.html">Hotel grid isotope</a></li>
-                <li><a href="hotels-grid-sidebar.html">Hotel grid sidebar</a></li>
-                <li><a href="hotels-grid-sidebar-2.html">Hotel grid sidebar 2</a></li>
-                <li><a href="hotels-grid.html">Hotel grid simple</a></li>
-                <li><a href="hotels-list-isotope.html">Hotel list isotope</a></li>
-                <li><a href="hotels-list-sidebar.html">Hotel list sidebar</a></li>
-                <li><a href="hotels-list-sidebar-2.html">Hotel list sidebar 2</a></li>
-                <li><a href="hotels-list.html">Hotel list simple</a></li>
-                <li><a href="hotelDO-detail.html">Hotel detail</a></li>
+                <li><a href="hotels-list-isotope.html">所有酒店</a></li>
+                <li><a href="hotel-order.html">我的酒店</a></li>
             </ul>
         </li>
-        <li><span><a href="#0">吃喝玩乐</a></span>
+        <li><span><a href="#0">美食</a></span>
             <ul>
-                <li><a href="restaurants-grid-isotope.html">Restaurant grid isotope</a></li>
-                <li><a href="restaurants-grid-sidebar.html">Restaurant grid sidebar</a></li>
-                <li><a href="restaurants-grid-sidebar-2.html">Restaurant grid sidebar 2</a></li>
-                <li><a href="restaurants-grid.html">Restaurant grid simple</a></li>
-                <li><a href="restaurants-list-isotope.html">Restaurant list isotope</a></li>
-                <li><a href="restaurants-list-sidebar.html">Restaurant list sidebar</a></li>
-                <li><a href="restaurants-list-sidebar-2.html">Restaurant list sidebar 2</a></li>
-                <li><a href="restaurants-list.html">Restaurant list simple</a></li>
-                <li><a href="restaurant-detail.html">Restaurant detail</a></li>
+                <li><a href="restaurants-grid-isotope.html">所有美食</a></li>
             </ul>
         </li>
-        <li><span><a href="#0">操作</a></span>
+        <li><span><a href="#0">发现景点</a></span>
             <ul>
-                <li><a href="about.html">About</a></li>
-                <li><a href="media-gallery.html">Media gallery</a></li>
-                <li><a href="help.html">Help Section</a></li>
-                <li><a href="faq.html">Faq Section</a></li>
-                <li><a href="wishlist.html">Wishlist page</a></li>
-                <li><a href="contacts.html">Contacts</a></li>
-                <li><a href="login_pre.html">Login</a></li>
-                <li><a href="register.html">Register</a></li>
-                <li><a href="blog.html">Blog</a></li>
-            </ul>
-        </li>
-        <li><span><a href="#0">其他</a></span>
-            <ul>
-                <li><a href="menu-options.html">Menu Position Options</a></li>
-                <li><a href="tour-detail-singlemonth-datepicker.html">Single month Datepicker</a></li>
-                <li><a href="404.html">404 Error page</a></li>
-                <li><a href="cart-1.html">Cart page 1</a></li>
-                <li><a href="cart-2.html">Cart page 2</a></li>
-                <li><a href="cart-3.html">Cart page 3</a></li>
-                <li><a href="pricing-tables.html">Responsive pricing tables</a></li>
-                <li><a href="coming_soon/index.html">Coming soon</a></li>
-                <li><a href="invoice.html">Invoice</a></li>
-                <li><a href="icon-pack-1.html">Icon pack 1</a></li>
-                <li><a href="icon-pack-2.html">Icon pack 2</a></li>
-                <li><a href="icon-pack-3.html">Icon pack 3</a></li>
-                <li><a href="icon-pack-4.html">Icon pack 4</a></li>
-                <li><a href="hamburgers.html">Animated Hamburgers</a></li>
+                <li><a href="up-site.html">添加景点</a></li>
             </ul>
         </li>
     </ul>

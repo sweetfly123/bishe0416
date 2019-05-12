@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="author" content="Ansonika">
+    <title>峰旗旅行</title>
+
+    <!-- Favicons-->
+    <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
+    <link rel="apple-touch-icon" type="image/x-icon" href="img/apple-touch-icon-57x57-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="72x72" href="img/apple-touch-icon-72x72-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="114x114"
+          href="img/apple-touch-icon-114x114-precomposed.png">
+    <link rel="apple-touch-icon" type="image/x-icon" sizes="144x144"
+          href="img/apple-touch-icon-144x144-precomposed.png">
+
+    <!-- BASE CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/style.css" rel="stylesheet">
+    <link href="css/vendors.css" rel="stylesheet">
+
+    <!-- YOUR CUSTOM CSS -->
+    <link href="css/custom.css" rel="stylesheet">
+
+    <!-- COMMON SCRIPTS -->
+    <script src="js/jquery-2.2.4.min.js"></script>
+
+    <!--图片上传-->
+
+    <link href="imageupload/dist/styles.imageuploader.css" rel="stylesheet" type="text/css">
+
+
+</head>
+
+<body>
+
+<div id="page">
+
+    <header id="header" class="header menu_fixed">
+
+    </header>
+    <!-- /header -->
+
+    <main>
+        <section id="section1" class="hero_in tours_detail">
+            <div class="wrapper">
+                <div class="container">
+                    <h1 id="sitedetailname" class="fadeInUp"><span></span></h1>
+                </div>
+            </div>
+        </section>
+        <!--/hero_in-->
+
+        <div class="bg_color_1">
+            <nav class="secondary_nav sticky_horizontal">
+                <div class="container">
+                    <ul class="clearfix">
+                        <li><a href="#description" class="active">发现景点</a></li>
+                        <li><a href="#reviews">评价</a></li>
+                    </ul>
+                </div>
+            </nav>
+            <div class="container margin_60_35">
+
+                <div class="row">
+                    <div class="col-lg-12">
+                        <section id="description">
+                            <div class="row l-center-box">
+                                <div class="col-md-10 input-group">
+                                    <span class="input-group-addon" style="width: 80px;">景点名称</span>
+                                    <input id="siteName" class="form-control" type="text" placeholder="景点名称...">
+                                </div>
+                            </div>
+                            <div class="row l-center-box">
+                                <div class="col-md-10 input-group">
+                                    <span class="input-group-addon" style="width: 80px;">景点介绍</span>
+                                    <textarea id="siteDescribe" class="form-control" type="text" placeholder="介绍信息..."></textarea>
+                                </div>
+                            </div>
+                            <div class="row l-center-box">
+                                <div class="col-md-10 input-group">
+                                    <span class="input-group-addon" style="width: 80px;">人均消费</span>
+                                    <select id="cost" class="form-control">
+                                        <option value="0">100以下</option>
+                                        <option value="1">100-200</option>
+                                        <option value="2">200-300</option>
+                                        <option value="3">300-400</option>
+                                        <option value="4">400-500</option>
+                                        <option value="5">500-600</option>
+                                        <option value="6">600-700</option>
+                                        <option value="7">700-800</option>
+                                        <option value="8">800-900</option>
+                                        <option value="9">900-1000</option>
+                                        <option value="10">1000以上</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row l-center-box">
+                                <div class="col-md-10 input-group">
+                                    <span class="input-group-addon" style="width: 80px;">地址详情</span>
+                                    <input id="siteAddress" class="form-control" type="text" placeholder="景点地址...">
+                                </div>
+                            </div>
+
+                            <div class="row l-center-box">
+                                <div class="col-md-10 input-group">
+                                    <section role="main" class="l-main">
+                                        <span class="input-group-addon" style="width: 50px;">景点图片</span>
+
+                                        <div class="uploader__box js-uploader__box" style="width:600px;">
+                                            <div class="uploader__contents">
+                                                <label class="button button--secondary" for="fileinput">请选择文件</label>
+                                                <input id="fileinput" class="uploader__file-input" type="file" multiple value="Select Files">
+                                            </div>
+                                            <input class="button button--big-bottom" type="submit" value="Upload Selected Files">
+                                        </div>
+                                    </section>
+                                </div>
+                            </div>
+                        </section>
+                        <!-- /section -->
+                    </div>
+
+                </div>
+                <!-- /row -->
+            </div>
+            <!-- /container -->
+        </div>
+        <!-- /bg_color_1 -->
+    </main>
+    <!--/main-->
+
+    <footer id="footer">
+    </footer>
+    <!--/footer-->
+</div>
+<!-- page -->
+
+<div id="toTop"></div><!-- Back to top button -->
+
+<!-- COMMON SCRIPTS -->
+<script src="imageupload/dist/jquery.imageuploader.js"></script>
+<script src="js/common_scripts.js"></script>
+<script src="js/main.js"></script>
+<script src="assets/validate.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#header").load("header.html");
+        $("#footer").load("footer.html");
+    });
+</script>
+
+<!-- INPUT QUANTITY  -->
+<script src="js/input_qty.js"></script>
+
+<!-- INSTAGRAM FEED  -->
+<script type="text/javascript">
+    (function () {
+        var options = {};
+        $('.js-uploader__box').uploader({
+            'selectButtonCopy': '请选择或拖拽文件',
+            'instructionsCopy': '你可以选择或拖拽多个文件',
+            'submitButtonCopy': '上传选择的文件',
+            'secondarySelectButtonCopy': '选择更多的文件',
+            'ajaxUrl': '/hotel/sites',
+            'locateHtml':'tours-grid-isotope.html',
+            'typeMethod':'POST',
+            'cancel':'取消'
+        });
+    }());
+</script>
+<script>
+    $(function () {
+        var url = window.location.search; //获取url中"?"符后的字串
+        var siteId;
+        var token = window.sessionStorage.getItem("token");
+
+    });
+</script>
+
+</body>
+</html>

@@ -5,20 +5,31 @@
 <mapper namespace="cn.lyf.hotelserver.dao.HotelDao">
     <select id="getHotelByHotelId" resultMap="hotelDO" parameterType="java.lang.String">
         SELECT
-         room_id,room_type,room_price,room_picture_path,room_desc,booked,user_id
-        FROM table_room tr
+         room_id,hotel_id,room_type,room_price,room_picture_path,room_desc,booked,user_id,hotel_name
+        FROM table_room tr,table_hotel th
         where
+          tr.hotel_id = th.id AND
           tr.room_id = #{roomId}
+          AND th.id = #{houseId}
+    </select>
+    <select id="getHotelByRoomId" resultMap="hotelDO" parameterType="java.lang.String">
+        SELECT
+        room_id,hotel_id,room_type,room_price,room_picture_path,room_desc,booked,user_id,hotel_name
+        FROM table_room tr,table_hotel th
+        where
+        tr.hotel_id = th.id AND
+        tr.room_id = #{roomId}
     </select>
     <select id="getHotelOrderInfoByHotelId" resultMap="hotelDO" parameterType="java.lang.String">
         SELECT
-        room_id,room_type,room_price,room_picture_path,booked,tr.user_id,guests,user_name
+        room_id,room_type,room_price,room_picture_path,booked,tr.user_id,guests,user_name,start_date,end_date
         FROM table_room tr,table_user tu
         where
         tr.user_id = tu.user_id AND tr.room_id = #{roomId}
     </select>
     <resultMap id="hotelDO" type="cn.lyf.hotelserver.entity.HotelDO" autoMapping="true">
         <id column="room_id" property="roomId"/>
+        <result column="hotel_id" property="hotelId"/>
         <result column="room_type" property="roomType"/>
         <result column="room_price" property="roomPrice"/>
         <result column="room_picture_path" property="roomPicturePath"/>
@@ -26,36 +37,47 @@
         <result column="booked" property="booked"/>
         <result column="user_id" property="userId"/>
         <result column="user_name" property="userName"/>
+        <result column="hotel_name" property="hotelName"/>
+        <result column="start_date" property="startDate"/>
+        <result column="end_date" property="endDate"/>
     </resultMap>
 
     <select id="findAllHotels" resultMap="hotelDO">
        SELECT
-         room_id,room_type,room_price,room_picture_path,room_desc,booked,user_id
-        FROM table_room
-        WHERE status = '0'
+         room_id,hotel_id,room_type,room_price,room_picture_path,room_desc,booked,user_id,hotel_name
+        FROM table_room tr,table_hotel th
+        WHERE status = '0' AND tr.hotel_id = th.id
+    </select>
+
+    <select id="findAllHotelsByCondition" resultMap="hotelDO">
+        SELECT
+        room_id,hotel_id,room_type,room_price,room_picture_path,room_desc,booked,user_id,hotel_name
+        FROM table_room tr,table_hotel th
+        WHERE status = '0' AND tr.hotel_id = th.id AND th.id = #{houseId}
     </select>
 
     <select id="getHotelByUserName" resultMap="hotelDO" parameterType="java.lang.String">
         SELECT
-         room_id,room_type,room_price,room_picture_path,room_desc,booked,u.user_id
-        FROM table_room h,table_user u
+         room_id,hotel_id,room_type,room_price,room_picture_path,room_desc,booked,u.user_id,hotel_name,start_date,end_date
+        FROM table_room h,table_user u,table_hotel th
         where
-          h.user_id = u.user_id AND u.user_name = #{userName}
+          h.user_id = u.user_id AND th.id = h.hotel_id AND u.user_name = #{userName}
     </select>
 
     <insert id="addHotel" useGeneratedKeys="true" keyProperty="id">
-        insert into table_room(room_id,room_type,room_price,room_picture_path,room_desc,booked,user_id)
-        values(#{roomId},#{roomType},#{roomPrice},#{roomPicturePath},#{roomDescribe},#{booked},#{userId})
+        insert into table_room(room_id,hotel_id,room_type,room_price,room_picture_path,room_desc,booked,user_id)
+        values(#{roomId},#{hotelId},#{roomType},#{roomPrice},#{roomPicturePath},#{roomDescribe},#{booked},#{userId})
     </insert>
 
     <update id="updateRoom">
         UPDATE table_room
         <set>
-            <if test="roomType != null">room_type = #{roomType},</if>
-            <if test="roomPrice != null">room_price = #{roomPrice},</if>
+            <if test="roomType != null and roomPrice != 0">room_type = #{roomType},</if>
+            <if test="roomPrice != null and roomPrice != 0">room_price = #{roomPrice},</if>
             <if test="roomPicturePath != null">room_picture_path = #{roomPicturePath},</if>
             <if test="booked != null">booked = #{booked},</if>
             <if test="userId != null">user_id = #{userId},</if>
+            <if test="guests != null">guests = #{guests},</if>
             <if test="userId != null">start_date = #{startDate},</if>
             <if test="userId != null">end_date = #{endDate}</if>
         </set>

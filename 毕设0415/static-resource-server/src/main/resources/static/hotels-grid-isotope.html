@@ -32,29 +32,36 @@
     <script type="text/javascript">
         var currentUserId;
         $(function () {
+            var url = window.location.search; //获取url中"?"符后的字串
+            var houseId;
+            var token = localStorage.getItem("token");
+            if (url.indexOf("?") != -1) {
+                houseId = url.substr(url.indexOf("=") + 1);
+            }
+
             var token = window.sessionStorage.getItem("token");
             var userName = window.sessionStorage.getItem("userName");
             var role;
+//            $.ajax({
+//                url: "http://localhost:8002/static/user/login",
+//                type: "POST",
+//                async: false,
+//                dataType: "json",
+//                data: {"userName": userName},
+//                beforeSend: function (e) {
+//                    e.setRequestHeader("Authorization", "bearer " + token);
+//                },
+//                success: function (data) {
+//                    $("#userh3").text("用户：" + data.userName);
+//                    $("#usersmall3").text("身份：" + data.role);
+//                    role = data.role;
+//                    currentUserId = data.userId;
+//                    window.localStorage.setItem("currentUserId", currentUserId);
+//                    window.localStorage.setItem("role", role);
+//                }
+//            });
             $.ajax({
-                url: "http://localhost:8002/static/user/login",
-                type: "POST",
-                async: false,
-                dataType: "json",
-                data: {"userName": userName},
-                beforeSend: function (e) {
-                    e.setRequestHeader("Authorization", "bearer " + token);
-                },
-                success: function (data) {
-                    $("#userh3").text("用户：" + data.userName);
-                    $("#usersmall3").text("身份：" + data.role);
-                    role = data.role;
-                    currentUserId = data.userId;
-                    window.localStorage.setItem("currentUserId", currentUserId);
-                    window.localStorage.setItem("role", role);
-                }
-            });
-            $.ajax({
-                url: "http://localhost:8002/hotel/hotels/hotel",
+                url: "http://localhost:8002/hotel/hotels/hotel/house/" + houseId,
                 type: "GET",
                 async: false,
                 dataType: "json",
@@ -71,17 +78,17 @@
 
                     for (i in data) {
                         if (data[i].roomType == "1") {
-                            type = "单人";
-                        } else {
-                            type = "双人";
+                            type = "单间";
+                        } else if (data[i].roomType == "2") {
+                            type = "标间";
                         }
-                        context += "<a href=\"javascript:void(0)\" onclick='booking(" + data[i].roomId + ")'><img src=hotel\"" + data[i].roomPicturePath + "\" class=\"img-fluid\" alt=\"\" width=\"800\" height=\"533\"><div class=\"read_more\"><span>预订</span></div></a>\n" +
+                        context += "<a href=\"javascript:void(0)\" onclick='booking(" + data[i].roomId + "," + houseId + ")'><img src=\"hotel/" + data[i].pictures[0] + "\" class=\"img-fluid\" alt=\"\" width=\"800\" height=\"533\"><div class=\"read_more\"><span>预订</span></div></a>\n" +
                             "<small>峰旗旅游</small>\n" +
                             "</figure>" +
                             "<div class=\"wrapper\">\n" +
                             "<div class=\"cat_star\"><i class=\"icon_star\"></i><i class=\"icon_star\"></i><i class=\"icon_star\"></i><i class=\"icon_star\"></i></div>\n" +
-                            "<h3><a href=\"hotelDO-detail.html\">" + type + "</a></h3>\n" +
-                            "<p style='width:280px;height:60px;line-height:30px;text-overflow:ellipsis;overflow:hidden;display:block;'>"+data[i].roomDescribe+"</p>\n" +
+                            "<h3>" + type + "</h3>\n" +
+                            //                            "<p style='width:280px;height:60px;line-height:30px;text-overflow:ellipsis;overflow:hidden;display:block;'>"+data[i].roomDescribe+"</p>\n" +
                             "<span class=\"price\">价格 <strong>￥" + data[i].roomPrice + "</strong> /一晚</span>\n" +
                             "</div>" +
                             "<ul>\n" +
@@ -100,11 +107,42 @@
             });
         });
 
-        function booking(roomId) {
+        $(function () {
+            var url = window.location.search; //获取url中"?"符后的字串
+            var houseId;
+            var token = window.sessionStorage.getItem("token");
+            if (url.indexOf("?") != -1) {
+                houseId = url.substr(url.indexOf("=") + 1);
+            }
+            $.ajax({
+                url: "http://localhost:8002/hotel/house/" + houseId,
+                type: "GET",
+                async: false,
+                dataType: "json",
+                beforeSend: function (e) {
+                    e.setRequestHeader("Authorization", "bearer " + token);
+                },
+                success: function (data) {
+                    $("#houseName").append(data.hotelName);
+                    $("#houseDesc").append(data.hotelDescribe);
+                    var i = 0;
+                    var context = "";
+                    for (i in data.pictures) {
+                        context = "<div class=\"col-md-4\">" +
+                            "<img src=\"house/" + data.pictures[i] + "\" class=\"img-fluid\" alt=\"\">" +
+                            "</div>";
+                        $("#tupian").append(context);
+                        context = "";
+                    }
+                }
+            });
+        });
+
+        function booking(roomId, houseId) {
             var token = window.sessionStorage.getItem("token");
             var book = false;
             $.ajax({
-                url: "http://localhost:8002/hotel/hotels/hotel/" + roomId,
+                url: "http://localhost:8002/hotel/hotels/hotel/" + roomId + "/" + houseId,
                 type: "GET",
                 async: false,
                 dataType: "json",
@@ -118,57 +156,9 @@
             if (book == true) {
                 alert("房间已被预订");
             } else {
-                window.location.href = "./hotel-detail.html?roomId=" + roomId;
+                window.location.href = "./hotel-detail.html?roomId=" + roomId + "&houseId=" + houseId;
             }
         }
-
-        function addHotel() {
-            var role = window.localStorage.getItem("role").toString();
-            if (role == "管理员") {
-                window.location.href = "./addHotel.html";
-            }
-            else {
-                alert("无权添加");
-                /*$("#notNull").show();
-                setTimeout(function(){$("#notNull").hide();},3000);//3秒后执行该方法*/
-            }
-        }
-
-        //查看预订房间
-        /*function lookHotel() {
-            var token = window.sessionStorage.getItem("token");
-            var userName = window.sessionStorage.getItem("userName");
-            $.ajax({
-                url: "http://localhost:8002/hotel/hotels/getHotelByUserName/" + userName,
-                type: "GET",
-                async: false,
-                beforeSend: function (e) {
-                    e.setRequestHeader("Authorization", "bearer " + token);
-                },
-                success: function (data) {
-                    var i = 0;
-                    var type;
-                    var context = "<div class=\"col-md-3\" style=\"text-align:center;height:250px;padding:10px 0px;\">";
-                    $("#hotelcontain").text("");
-                    for (i in data) {
-
-                        if (data[i].roomType == "1") {
-                            type = "单人";
-                        } else {
-                            type = "双人";
-                        }
-                        context += "<a href=\"\">" +
-                            "<img width=\"200\" height=\"200\" src=\"http://127.0.0.1:8002/static/resources/" + data[i].roomPicturePath + "\"onclick=\"booking(" + data[i].roomId + ")\" width=\"130\" height=\"130\"\n" +
-                            "style=\"display: inline-block;\"></a>" +
-                            "<p><a href=\"\" style='color:#666'>" + type + "</a></p>" +
-                            "<p><font color=\"#E4393C\" style=\"font-size:16px\">&yen;" + data[i].roomPrice + "</font></p>\n" +
-                            "<p><a>预订人：" + userName + "</a><p></div>";
-                        $("#hotelcontain").append(context);
-                        context = "<div class=\"col-md-3\" style=\"text-align:center;height:250px;padding:10px 0px;\">";
-                    }
-                }
-            })
-        }*/
     </script>
 </head>
 
@@ -186,43 +176,13 @@
         <section class="hero_in hotels">
             <div class="wrapper">
                 <div class="container">
-                    <h1 class="fadeInUp"><span></span>峰&nbsp;&nbsp;旗&nbsp;&nbsp;酒&nbsp;&nbsp;店&nbsp;&nbsp;布&nbsp;&nbsp;局
+                    <h1 class="fadeInUp"><span></span>峰&nbsp;&nbsp;旗&nbsp;&nbsp;旅&nbsp;&nbsp;游
                     </h1>
                 </div>
             </div>
         </section>
         <!--/hero_in-->
 
-        <div class="filters_listing sticky_horizontal">
-            <div class="container">
-                <ul class="clearfix">
-                    <li>
-                        <div class="switch-field">
-                            <input type="radio" id="all" name="listing_filter" value="all" checked data-filter="*"
-                                   class="selected">
-                            <label for="all">全部</label>
-                            <input type="radio" id="popular" name="listing_filter" value="popular"
-                                   data-filter=".popular">
-                            <label for="popular">流行</label>
-                            <input type="radio" id="latest" name="listing_filter" value="latest" data-filter=".latest">
-                            <label for="latest">简单</label>
-                        </div>
-                    </li>
-                    <li>
-                        <div class="layout_view">
-                            <a href="#0" class="active"><i class="icon-th"></i></a>
-                            <a href="hotels-list-isotope.html"><i class="icon-th-list"></i></a>
-                        </div>
-                    </li>
-                    <li>
-                        <a class="btn_map" data-toggle="collapse" href="#collapseMap" aria-expanded="false"
-                           aria-controls="collapseMap" data-text-swap="Hide map" data-text-original="View on map">View
-                            on map</a>
-                    </li>
-                </ul>
-            </div>
-            <!-- /container -->
-        </div>
         <!-- /filters -->
 
         <div class="collapse" id="collapseMap">
@@ -231,45 +191,43 @@
         <!-- End Map -->
 
         <div class="container margin_60_35">
-            <div class="col-lg-12">
-                <div class="row no-gutters custom-search-input-2 inner">
-                    <div class="col-lg-4">
-                        <div class="form-group">
-                            <input class="form-control" type="text" placeholder="您需要查找什么...">
-                            <i class="icon_search"></i>
+            <div class="bg_color_1">
+                <div class="container margin_60_35">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <section id="description" style="margin-bottom: 10px;border-bottom: 1px solid #ededed;">
+                                <h2>酒店介绍</h2>
+                                <p id="desc">
+                                </p>
+                                <div class="col-md-12">
+                                    <h4 id="houseName"></h4>
+                                    <p style="margin-bottom:5px;" id="houseDesc"></p>
+                                </div>
+                                <hr style="margin: 15px 0 0 0">
+                                <div class="room_type last">
+                                    <div id="tupian" class="row">
+
+                                    </div>
+                                    <!-- /row -->
+                                </div>
+                            </section>
                         </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <div class="form-group">
-                            <input class="form-control" type="text" placeholder="地点">
-                            <i class="icon_pin_alt"></i>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <select class="wide">
-                            <option>All Categories</option>
-                            <option>Paris Center</option>
-                            <option>La Defanse</option>
-                            <option>Latin Quarter</option>
-                        </select>
-                    </div>
-                    <div class="col-lg-2">
-                        <input type="submit" class="btn_search" value="查找">
                     </div>
                 </div>
-                <!-- /row -->
             </div>
+
+            <!--*************-->
+
             <!-- /custom-search-input-2 -->
 
             <div id="hotelcontainer" class="isotope-wrapper">
+                <hr>
+                <h3>酒店房间</h3>
                 <div id="hotelcontainerrow" class="row">
                 </div>
                 <!-- /row -->
             </div>
             <!-- /isotope-wrapper -->
-
-            <p class="text-center"><a href="#0" class="btn_1 rounded add_top_30">Load more</a></p>
-
         </div>
         <!-- /container -->
 
@@ -374,18 +332,9 @@
     });
 </script>
 <!-- Map -->
-<!--<script src="http://maps.googleapis.com/maps/api/js"></script>
-<script src="verifyjs/markerclusterer.verifyjs"></script>
-<script src="verifyjs/map_hotels.verifyjs"></script>
-<script src="verifyjs/infobox.verifyjs"></script>-->
-
 <!-- Masonry Filtering -->
 <script src="js/isotope.min.js"></script>
 <script>
-/*    $(window).load(function () {
-        var $container = $('.isotope-wrapper');
-        $container.isotope({itemSelector: '.isotope-item', layoutMode: 'masonry'});
-    });*/
 
     $('.filters_listing').on('click', 'input', 'change', function () {
         var selector = $(this).attr('data-filter');

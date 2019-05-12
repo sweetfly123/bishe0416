@@ -9,7 +9,6 @@
                 dropZone: $(this),
                 fileTypeWhiteList: ['jpg', 'png', 'jpeg', 'gif', 'pdf'],
                 badFileTypeMessage: '对不起，我们不能接受这种类型的文件。',
-                ajaxUrl: '/hotel/sites',
                 testMode: false
             }, options);
 
@@ -20,11 +19,12 @@
                 listIndex: 0
             };
 
+
             // create DOM elements
             var dom = {
                 uploaderBox: $(this),
                 submitButton: $('<div style="float:left;text-align: left;"><input class="btn btn-default" style="background-color: #00cd72" type="submit" value="确定"></div>'),
-                cancel:$('<div class="col-md-3"><input class="btn btn-default" type="button" onclick="cancel()" value="取消"></div>'),
+                cancel: $('<div style="float:left;margin-left: 50px;"><input class="btn btn-default" type="button" onclick="cancel()" value="取消"></div>'),
                 instructions: $('<p class="js-uploader__instructions uploader__instructions">' +
                     options.instructionsCopy + '</p>'),
                 selectButton: $('<input style="height: 0; width: 0;" id="fileinput' + index + '" type="file" multiple class="js-uploader__file-input uploader__file-input">' +
@@ -48,9 +48,9 @@
             // set up event handling
             bindUIEvents();
 
-            function setupDOM (dom) {
+            function setupDOM(dom) {
                 dom.contentsContainer
-                    // .append(dom.instructions)
+                // .append(dom.instructions)
                     .append(dom.selectButton);
                 dom.furtherInstructions
                     .append(dom.secondarySelectButton);
@@ -62,7 +62,7 @@
                     .append(dom.cancel);
             }
 
-            function bindUIEvents () {
+            function bindUIEvents() {
                 // handle drag and drop
                 options.dropZone.on('dragover dragleave', function (e) {
                     e.preventDefault();
@@ -72,9 +72,13 @@
                 options.dropZone.on('drop', selectFilesHandler);
 
                 // hack for being able selecting the same file name twice
-                dom.selectButton.on('click', function () { this.value = null; });
+                dom.selectButton.on('click', function () {
+                    this.value = null;
+                });
                 dom.selectButton.on('change', selectFilesHandler);
-                dom.secondarySelectButton.on('click', function () { this.value = null; });
+                dom.secondarySelectButton.on('click', function () {
+                    this.value = null;
+                });
                 dom.secondarySelectButton.on('change', selectFilesHandler);
 
                 // handle the submit click
@@ -84,26 +88,26 @@
                 dom.uploaderBox.on('click', '.js-upload-remove-button', removeItemHandler);
 
                 //取消操作
-                dom.cancel.on('click',cancel)
+                dom.cancel.on('click', cancel)
 
                 // expose handlers for testing
                 if (options.testMode) {
                     options.dropZone.on('uploaderTestEvent', function (e) {
                         switch (e.functionName) {
-                        case 'selectFilesHandler':
-                            selectFilesHandler(e);
-                            break;
-                        case 'uploadSubmitHandler':
-                            uploadSubmitHandler(e);
-                            break;
-                        default:
-                            break;
+                            case 'selectFilesHandler':
+                                selectFilesHandler(e);
+                                break;
+                            case 'uploadSubmitHandler':
+                                uploadSubmitHandler(e);
+                                break;
+                            default:
+                                break;
                         }
                     });
                 }
             }
 
-            function addItem (file) {
+            function addItem(file) {
                 var fileName = cleanName(file.name);
                 var fileSize = file.size;
                 var id = state.listIndex;
@@ -153,7 +157,7 @@
                 dom.fileList.append(listItem);
             }
 
-            function getExtension (path) {
+            function getExtension(path) {
                 var basename = path.split(/[\\/]/).pop();
                 var pos = basename.lastIndexOf('.');
 
@@ -163,7 +167,7 @@
                 return basename.slice(pos + 1);
             }
 
-            function formatBytes (bytes, decimals) {
+            function formatBytes(bytes, decimals) {
                 if (bytes === 0) return '0 Bytes';
                 var k = 1024;
                 var dm = decimals + 1 || 3;
@@ -172,60 +176,108 @@
                 return (bytes / Math.pow(k, i)).toPrecision(dm) + ' ' + sizes[i];
             }
 
-            function cleanName (name) {
+            function cleanName(name) {
                 name = name.replace(/\s+/gi, '-'); // Replace white space with dash
                 return name.replace(/[^a-zA-Z0-9.\-]/gi, ''); // Strip any special characters
             }
 
-            function uploadSubmitHandler () {
-                if (state.fileBatch.length !== 0) {
+            function uploadSubmitHandler() {
 
-                    var token = localStorage.getItem("token"),
-                        siteName = $("#siteName").val(),
-                        siteDescribe = $("#siteDescribe").val(),
-                        siteAddress = $("#siteAddress").val();
-                    var data = new FormData();
-                    for (var i = 0; i < state.fileBatch.length; i++) {
-                        data.append('files', state.fileBatch[i].file);
-                    }
+                var token = window.localStorage.getItem("token"),
+                    siteName = $("#siteName").val(),
+                    siteDescribe = $("#siteDescribe").val(),
+                    siteAddress = $("#siteAddress").val(),
+                    siteId = $("#siteId").val(),
+                    cost = $("#cost").val(),
+
+                    //酒店
+                    houseHotelId = $("#houseId").val(),
+                    hotelName = $("#hotelName").val(),
+                    hotelDescribe = $("#hotelDescribe").val(),
+                    hotelAddress = $("#hotelAddress").val(),
+                    hotelSiteId = $("#houseSiteId").val(),
+
+                    //酒店房间
+                    roomId = $("#roomId").val(),
+                    roomType = $("#roomType").val(),
+                    roomPrice = $("#roomPrice").val(),
+                    hotelId = $("#hotelId").val(),
+
+                    //食物
+                    foodName = $("#foodName").val(),
+                    foodDescribe = $("#foodDescribe").val(),
+                    foodPrice = $("#foodPrice").val(),
+                    foodAddress = $("#foodAddress").val(),
+                    foodSiteId = $("#foodSiteId").val(),
+                    foodId = $("#editfoodid").val();
+
+                var data = new FormData();
+                for (var i = 0; i < state.fileBatch.length; i++) {
+                    data.append('files', state.fileBatch[i].file);
+                }
+                //景点
+                if (siteName != undefined) {
                     data.append('siteName', siteName);
                     data.append('siteDescribe', siteDescribe);
                     data.append('siteAddress', siteAddress);
-                    $.ajax({
-                        type: 'POST',
-                        mimeType: "multipart/form-data",
-                        beforeSend: function (e) {
-                            e.setRequestHeader("Authorization", "bearer " + token);
-                        },
-                        url: options.ajaxUrl,
-                        data: data,
-                        cache: false,
-                        contentType: false,
-                        processData: false
-                    });
-                    /*$.ajax({
-                        url: "http://localhost:8002/hotel/hotels/hotel",
-                        type: 'POST',
-                        contentType: "application/json;charset=utf-8",
-                        async: false,
-                        data: data,
-                        contentType: false,
-                        processData: false,
-                        mimeType: "multipart/form-data",
-                        beforeSend: function (e) {
-                            e.setRequestHeader("Authorization", "bearer " + token);
-                        },
-                        success: function (data) {
-                            alert("添加成功！");
-                            window.location.href = "http://localhost:8002/hotel/resources/page/addRoom.html";
-                        },
-                        cache: false,
-
-                    });*/
+                    data.append('siteCost', cost);
+                    if (siteId != undefined) {
+                        data.append('id', siteId);
+                    }
                 }
+
+
+                //酒店
+                if (hotelName != undefined) {
+                    data.append('hotelName', hotelName);
+                    data.append('hotelDescribe', hotelDescribe);
+                    data.append('hotelAddress', hotelAddress);
+                    data.append('siteId', hotelSiteId);
+                    if (houseHotelId != undefined) {
+                        data.append('Id', houseHotelId);
+                    }
+                }
+
+                //酒店房间
+                if (roomId != undefined) {
+                    data.append('roomId', roomId);
+                    data.append('roomType', roomType);
+                    data.append('roomPrice', roomPrice);
+                    data.append('hotelId', hotelId);
+                }
+
+                //美食
+                if (foodName != undefined) {
+                    data.append('foodName', foodName);
+                    data.append('foodDescribe', foodDescribe);
+                    data.append('foodPrice', foodPrice);
+                    data.append('foodAddress', foodAddress);
+                    data.append('siteId', foodSiteId);
+                    if (foodId != undefined) {
+                        data.append('Id', foodId);
+                    }
+                }
+
+
+                $.ajax({
+                    type: options.typeMethod,
+                    mimeType: "multipart/form-data",
+                    beforeSend: function (e) {
+                        e.setRequestHeader("Authorization", "bearer " + token);
+                    },
+                    url: options.ajaxUrl,
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function (data) {
+                        alert("成功");
+                        window.location.href = "http://localhost:8002/hotel/resources/page/" + options.locateHtml;
+                    }
+                });
             }
 
-            function selectFilesHandler (e) {
+            function selectFilesHandler(e) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -241,7 +293,7 @@
                 renderControls();
             }
 
-            function renderControls () {
+            function renderControls() {
                 if (dom.fileList.children().size() !== 0) {
                     // dom.submitButton.removeClass('uploader__hide');
                     dom.furtherInstructions.removeClass('uploader__hide');
@@ -253,7 +305,7 @@
                 }
             }
 
-            function removeItemHandler (e) {
+            function removeItemHandler(e) {
                 e.preventDefault();
 
                 if (!state.isUploading) {
@@ -265,7 +317,7 @@
                 renderControls();
             }
 
-            function removeItem (id) {
+            function removeItem(id) {
                 // remove from the batch
                 for (var i = 0; i < state.fileBatch.length; i++) {
                     if (state.fileBatch[i].id === parseInt(id)) {

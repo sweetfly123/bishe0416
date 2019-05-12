@@ -8,7 +8,7 @@
     <meta name="description"
           content="Panagea - Premium site template for travel agencies, hotels and restaurant listing.">
     <meta name="author" content="Ansonika">
-    <title>Panagea | Premium site template for travel agencies, hotels and restaurant listing.</title>
+    <title>峰旗旅行</title>
 
     <!-- Favicons-->
     <link rel="shortcut icon" href="img/favicon.ico" type="image/x-icon">
@@ -26,9 +26,54 @@
 
     <!-- YOUR CUSTOM CSS -->
     <link href="css/custom.css" rel="stylesheet">
-
     <!-- COMMON SCRIPTS -->
     <script src="js/jquery-2.2.4.min.js"></script>
+    <script type="text/javascript">
+        var foodId;
+        $(function () {
+            var url = window.location.search; //获取url中"?"符后的字串
+            var result;
+            if (url.indexOf("?") != -1) {
+                var strs = new Array(2);
+                strs = url.split("&");
+                foodId = strs[0].substr(url.indexOf("=") + 1);
+            }
+
+            var token = window.sessionStorage.getItem("token");
+            var book = false;
+            $.ajax({
+                url: "http://localhost:8002/hotel/food/" + foodId,
+                type: "GET",
+                async: false,
+                dataType: "json",
+                beforeSend: function (e) {
+                    e.setRequestHeader("Authorization", "bearer " + token);
+                },
+                success: function (data) {
+//                    $("#drfj").append("<img src=\"hotel/"+data.pictures[0]+"\" class=\"img-fluid\" alt=\"\">");
+                    $("#desc").append(data.foodDescribe);
+                    $("#price").text("￥"+data.foodPrice);
+                    $("#fooddetailname").append(data.foodName);
+                    $("#msdz").append("<span>"+data.foodAddress+"</span>");
+                    var i = 0;
+                    var imgsrc = "";
+                    var context = "";
+                    for (i in data.pictures)
+                    {
+                        imgsrc = data.pictures[i];
+                        context = "<img style='width: 220px;height: 200px;' class=\"imgcall\" src=\"food/"+imgsrc+"\">";
+                        $("#mstp").append(context);
+                        context = "";
+                        imgsrc = "";
+                    }
+
+                }
+            });
+        });
+    </script>
+    <!-- COMMON SCRIPTS -->
+    <script src="js/jquery-2.2.4.min.js"></script>
+
 </head>
 
 <body>
@@ -36,22 +81,17 @@
 <div id="page">
 
     <header id="header" class="header menu_fixed">
-
+        <nav id="menu" class="main-menu">
+        </nav>
     </header>
     <!-- /header -->
 
     <main>
-        <section class="hero_in restaurants_detail">
+        <section class="hero_in hotels_detail">
             <div class="wrapper">
                 <div class="container">
-                    <h1 class="fadeInUp"><span></span>Restaurant detail page</h1>
+                    <h1 class="fadeInUp" id="fooddetailname"><span></span></h1>
                 </div>
-                <span class="magnific-gallery">
-					<a href="img/gallery/restaurant_list_1.jpg" class="btn_photos" title="Photo title"
-                       data-effect="mfp-zoom-in">View photos</a>
-					<a href="img/gallery/restaurant_list_2.jpg" title="Photo title" data-effect="mfp-zoom-in"></a>
-					<a href="img/gallery/restaurant_list_3.jpg" title="Photo title" data-effect="mfp-zoom-in"></a>
-				</span>
             </div>
         </section>
         <!--/hero_in-->
@@ -60,8 +100,7 @@
             <nav class="secondary_nav sticky_horizontal">
                 <div class="container">
                     <ul class="clearfix">
-                        <li><a href="#description" class="active">Description</a></li>
-                        <li><a href="#reviews">Reviews</a></li>
+                        <li><a href="#description" class="active">介绍</a></li>
                         <li><a href="#sidebar">Booking</a></li>
                     </ul>
                 </div>
@@ -70,286 +109,30 @@
                 <div class="row">
                     <div class="col-lg-8">
                         <section id="description">
-                            <h2>Description</h2>
-                            <p>Per consequat adolescens ex, cu nibh commune <strong>temporibus vim</strong>, ad sumo
-                                viris eloquentiam sed. Mea appareat omittantur eloquentiam ad, nam ei quas oportere
-                                democritum. Prima causae admodum id est, ei timeam inimicus sed. Sit an meis aliquam,
-                                cetero inermis vel ut. An sit illum euismod facilisis, tamquam vulputate pertinacia eum
-                                at.</p>
-                            <p>Cum et probo menandri. Officiis consulatu pro et, ne sea sale invidunt, sed ut sint
-                                <strong>blandit</strong> efficiendi. Atomorum explicari eu qui, est enim quaerendum te.
-                                Quo harum viris id. Per ne quando dolore evertitur, pro ad cibo commune.</p>
-                            <div class="row">
-                                <div class="col-lg-6">
-                                    <ul class="bullets">
-                                        <li>Dolorem mediocritatem</li>
-                                        <li>Mea appareat</li>
-                                        <li>Prima causae</li>
-                                        <li>Singulis indoctum</li>
-                                    </ul>
-                                </div>
-                                <div class="col-lg-6">
-                                    <ul class="bullets">
-                                        <li>Timeam inimicus</li>
-                                        <li>Oportere democritum</li>
-                                        <li>Cetero inermis</li>
-                                        <li>Pertinacia eum</li>
-                                    </ul>
-                                </div>
-                            </div>
-                            <!-- /row -->
-                            <hr>
-                            <h3>Instagram photos feed</h3>
-                            <div id="instagram-feed-restaurant" class="clearfix"></div>
-                            <hr>
-                            <h3>Location</h3>
-                            <div id="map" class="map map_single add_bottom_30"></div>
-                            <!-- End Map -->
-                        </section>
-                        <!-- /section -->
+                            <h2>美食介绍</h2>
+                            <p id="desc">
 
-                        <section id="reviews">
-                            <h2>Reviews</h2>
-                            <div class="reviews-container">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <div id="review_summary">
-                                            <strong>8.5</strong>
-                                            <em>Superb</em>
-                                            <small>Based on 4 reviews</small>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-9">
-                                        <div class="row">
-                                            <div class="col-lg-10 col-9">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" style="width: 90%"
-                                                         aria-valuenow="90" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-3">
-                                                <small><strong>5 stars</strong></small>
-                                            </div>
-                                        </div>
-                                        <!-- /row -->
-                                        <div class="row">
-                                            <div class="col-lg-10 col-9">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" style="width: 95%"
-                                                         aria-valuenow="95" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-3">
-                                                <small><strong>4 stars</strong></small>
-                                            </div>
-                                        </div>
-                                        <!-- /row -->
-                                        <div class="row">
-                                            <div class="col-lg-10 col-9">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" style="width: 60%"
-                                                         aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-3">
-                                                <small><strong>3 stars</strong></small>
-                                            </div>
-                                        </div>
-                                        <!-- /row -->
-                                        <div class="row">
-                                            <div class="col-lg-10 col-9">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" style="width: 20%"
-                                                         aria-valuenow="20" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-3">
-                                                <small><strong>2 stars</strong></small>
-                                            </div>
-                                        </div>
-                                        <!-- /row -->
-                                        <div class="row">
-                                            <div class="col-lg-10 col-9">
-                                                <div class="progress">
-                                                    <div class="progress-bar" role="progressbar" style="width: 0"
-                                                         aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
-                                                </div>
-                                            </div>
-                                            <div class="col-lg-2 col-3">
-                                                <small><strong>1 stars</strong></small>
-                                            </div>
-                                        </div>
-                                        <!-- /row -->
-                                    </div>
+                            </p>
+                            <div id="instagram-feed-hotelDO" class="clearfix"></div>
+                            <hr>
+                            <div class="room_type first">
+                                <div id="mstp" class="row">
                                 </div>
                                 <!-- /row -->
                             </div>
-
                             <hr>
-
-                            <div class="reviews-container">
-
-                                <div class="review-box clearfix">
-                                    <figure class="rev-thumb"><img src="img/avatar1.jpg" alt="">
-                                    </figure>
-                                    <div class="rev-content">
-                                        <div class="rating">
-                                            <i class="icon_star voted"></i><i class="icon_star voted"></i><i
-                                                class="icon_star voted"></i><i class="icon_star voted"></i><i
-                                                class="icon_star"></i>
-                                        </div>
-                                        <div class="rev-info">
-                                            Admin – April 03, 2016:
-                                        </div>
-                                        <div class="rev-text">
-                                            <p>
-                                                Sed eget turpis a pede tempor malesuada. Vivamus quis mi at leo pulvinar
-                                                hendrerit. Cum sociis natoque penatibus et magnis dis
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /review-box -->
-                                <div class="review-box clearfix">
-                                    <figure class="rev-thumb"><img src="img/avatar2.jpg" alt="">
-                                    </figure>
-                                    <div class="rev-content">
-                                        <div class="rating">
-                                            <i class="icon-star voted"></i><i class="icon_star voted"></i><i
-                                                class="icon_star voted"></i><i class="icon_star voted"></i><i
-                                                class="icon_star"></i>
-                                        </div>
-                                        <div class="rev-info">
-                                            Ahsan – April 01, 2016:
-                                        </div>
-                                        <div class="rev-text">
-                                            <p>
-                                                Sed eget turpis a pede tempor malesuada. Vivamus quis mi at leo pulvinar
-                                                hendrerit. Cum sociis natoque penatibus et magnis dis
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /review-box -->
-                                <div class="review-box clearfix">
-                                    <figure class="rev-thumb"><img src="img/avatar3.jpg" alt="">
-                                    </figure>
-                                    <div class="rev-content">
-                                        <div class="rating">
-                                            <i class="icon-star voted"></i><i class="icon_star voted"></i><i
-                                                class="icon_star voted"></i><i class="icon_star voted"></i><i
-                                                class="icon_star"></i>
-                                        </div>
-                                        <div class="rev-info">
-                                            Sara – March 31, 2016:
-                                        </div>
-                                        <div class="rev-text">
-                                            <p>
-                                                Sed eget turpis a pede tempor malesuada. Vivamus quis mi at leo pulvinar
-                                                hendrerit. Cum sociis natoque penatibus et magnis dis
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- /review-box -->
-                            </div>
-                            <!-- /review-container -->
+                            <h4 id="msdz">地址：</h4>
                         </section>
-                        <!-- /section -->
-                        <hr>
-
-                        <div class="add-review">
-                            <h5>Leave a Review</h5>
-                            <form>
-                                <div class="row">
-                                    <div class="form-group col-md-6">
-                                        <label>Name and Lastname *</label>
-                                        <input type="text" name="name_review" id="name_review" placeholder=""
-                                               class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label>Email *</label>
-                                        <input type="email" name="email_review" id="email_review" class="form-control">
-                                    </div>
-                                    <div class="form-group col-md-6">
-                                        <label>Rating </label>
-                                        <div class="custom-select-form">
-                                            <select name="rating_review" id="rating_review" class="wide">
-                                                <option value="1">1 (lowest)</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5" selected>5 (medium)</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10 (highest)</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div class="form-group col-md-12">
-                                        <label>Your Review</label>
-                                        <textarea name="review_text" id="review_text" class="form-control"
-                                                  style="height:130px;"></textarea>
-                                    </div>
-                                    <div class="form-group col-md-12 add_top_20">
-                                        <input type="submit" value="Submit" class="btn_1" id="submit-review">
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
                     </div>
                     <!-- /col -->
 
                     <aside class="col-lg-4" id="sidebar">
                         <div class="box_detail booking">
                             <div class="price">
-                                <span>45$ <small>person</small></span>
-                                <div class="score"><span>Good<em>350 Reviews</em></span><strong>7.0</strong></div>
-                            </div>
-
-                            <div class="form-group" id="input_date">
-                                <input class="form-control" type="text" name="dates" placeholder="When..">
-                                <i class="icon_calendar"></i>
-                            </div>
-
-                            <div class="panel-dropdown">
-                                <a href="#">Guests <span class="qtyTotal">1</span></a>
-                                <div class="panel-dropdown-content right">
-                                    <div class="qtyButtons">
-                                        <label>Adults</label>
-                                        <input type="text" name="qtyInput" value="1">
-                                    </div>
-                                    <div class="qtyButtons">
-                                        <label>Childrens</label>
-                                        <input type="text" name="qtyInput" value="0">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="form-group clearfix">
-                                <div class="custom-select-form">
-                                    <select class="wide">
-                                        <option>Time</option>
-                                        <option>Lunch</option>
-                                        <option>Dinner</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <a href="cart-1.html" class=" add_top_30 btn_1 full-width purchase">Book now</a>
-                            <a href="wishlist.html" class="btn_1 full-width outline wishlist"><i class="icon_heart"></i>
-                                Add to wishlist</a>
-                            <div class="text-center">
-                                <small>No money charged in this step</small>
+                                <span id="price"> </span>
+                                <div class="score"><strong>7.0</strong></div>
                             </div>
                         </div>
-                        <ul class="share-buttons">
-                            <li><a class="fb-share" href="#0"><i class="social_facebook"></i> Share</a></li>
-                            <li><a class="twitter-share" href="#0"><i class="social_twitter"></i> Tweet</a></li>
-                            <li><a class="gplus-share" href="#0"><i class="social_googleplus"></i> Share</a></li>
-                        </ul>
                     </aside>
                 </div>
                 <!-- /row -->
@@ -365,58 +148,35 @@
     <!--/footer-->
 </div>
 <!-- page -->
-
-<!-- Sign In Popup -->
-<div id="sign-in-dialog" class="zoom-anim-dialog mfp-hide">
-    <div class="small-dialog-header">
-        <h3>Sign In</h3>
-    </div>
-    <form>
-        <div class="sign-in-wrapper">
-            <a href="#0" class="social_bt facebook">Login with Facebook</a>
-            <a href="#0" class="social_bt google">Login with Google</a>
-            <div class="divider"><span>Or</span></div>
-            <div class="form-group">
-                <label>Email</label>
-                <input type="email" class="form-control" name="email" id="email">
-                <i class="icon_mail_alt"></i>
-            </div>
-            <div class="form-group">
-                <label>Password</label>
-                <input type="password" class="form-control" name="password" id="password" value="">
-                <i class="icon_lock_alt"></i>
-            </div>
-            <div class="clearfix add_bottom_15">
-                <div class="checkboxes float-left">
-                    <label class="container_check">Remember me
-                        <input type="checkbox">
-                        <span class="checkmark"></span>
-                    </label>
-                </div>
-                <div class="float-right mt-1"><a id="forgot" href="javascript:void(0);">Forgot Password?</a></div>
-            </div>
-            <div class="text-center"><input type="submit" value="Log In" class="btn_1 full-width"></div>
-            <div class="text-center">
-                Don’t have an account? <a href="register.html">Sign up</a>
-            </div>
-            <div id="forgot_pw">
-                <div class="form-group">
-                    <label>Please confirm login email below</label>
-                    <input type="email" class="form-control" name="email_forgot" id="email_forgot">
-                    <i class="icon_mail_alt"></i>
-                </div>
-                <p>You will receive an email containing a link allowing you to reset your password to a new preferred
-                    one.</p>
-                <div class="text-center"><input type="submit" value="Reset Password" class="btn_1"></div>
-            </div>
-        </div>
-    </form>
-    <!--form -->
-</div>
-<!-- /Sign In Popup -->
-
 <div id="toTop"></div><!-- Back to top button -->
 
+<!-- Map -->
+<!--<script src="http://maps.googleapis.com/maps/api/js"></script>
+<script src="js/map_single_hotel.js"></script>
+<script src="js/infobox.js"></script>-->
+
+<!-- DATEPICKER  -->
+<script>
+    var startTime;
+    var endTime;
+    $(function () {
+        $('input[name="dates"]').daterangepicker({
+            autoUpdateInput: false,
+            opens: 'left',
+            locale: {
+                cancelLabel: 'Clear'
+            }
+        });
+        $('input[name="dates"]').on('apply.daterangepicker', function (ev, picker) {
+            $(this).val(picker.startDate.format('YYYY-MM-DD') + ' > ' + picker.endDate.format('YYYY-MM-DD'));
+            startTime = picker.startDate.format('YYYY-MM-DD');
+            endTime = picker.endDate.format('YYYY-MM-DD');
+        });
+        $('input[name="dates"]').on('cancel.daterangepicker', function (ev, picker) {
+            $(this).val('');
+        });
+    });
+</script>
 <!-- COMMON SCRIPTS -->
 <script src="js/common_scripts.js"></script>
 <script src="js/main.js"></script>
@@ -427,25 +187,6 @@
         $("#footer").load("footer.html");
     });
 </script>
-
-<!-- Map -->
-<!--<script src="http://maps.googleapis.com/maps/api/js"></script>
-<script src="js/map_single_restaurant.js"></script>
-<script src="js/infobox.js"></script>-->
-
-<!-- DATEPICKER  -->
-<script>
-    $('input[name="dates"]').daterangepicker({
-        "singleDatePicker": true,
-        "autoApply": true,
-        parentEl: '#input_date',
-        "linkedCalendars": false,
-        "showCustomRangeLabel": false
-    }, function (start, end, label) {
-        console.log('New date range selected: ' + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD') + ' (predefined range: ' + label + ')');
-    });
-</script>
-
 <!-- INPUT QUANTITY  -->
 <script src="js/input_qty.js"></script>
 
@@ -454,8 +195,8 @@
     $(window).on('load', function () {
         "use strict";
         $.instagramFeed({
-            'username': 'restaurantetanit',
-            'container': "#instagram-feed-restaurant",
+            'username': 'hotelwailea',
+            'container': "#instagram-feed-hotelDO",
             'display_profile': false,
             'display_biography': false,
             'display_gallery': true,

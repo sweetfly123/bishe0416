@@ -18,12 +18,15 @@ public interface HotelService {
      * @param roomId
      * @return
      */
-    HotelDO getHotelByHotelId(String roomId);
+    HotelDO getHotelByHotelId(String roomId,String houseId);
     /**
      *  查询所有房间信息
      * @return
      */
     List<HotelDO> findAllHotels();
+
+    List<HotelDO> findAllHotelsByCondition(Integer houseId);
+
     /**
      * 通过UserName查询该用户的房间
      * @param userName
@@ -54,4 +57,6 @@ public interface HotelService {
      * @return
      */
     HotelDO getHotelOrderInfoByHotelId(String roomId);
+
+    HotelDO getHotelByRoomId(String roomId);
 }

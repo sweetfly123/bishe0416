@@ -23,8 +23,9 @@
 <script src="../layerui/layui.js"></script>
 
 <link rel="stylesheet" href="../assets/css/ace-ie.min.css"/>
-<script src="../assets/js/jquery.2.1.1.min.js"></script>
 <script src="../assets/js/bootstrap.min.js"></script>
+<script src="../assets/js/jquery.2.1.1.min.js"></script>
+
 <script src="../assets/js/html5shiv.min.js"></script>
 <script src="../assets/js/respond.min.js"></script>
 <link rel="stylesheet" href="https://cdn.staticfile.org/twitter-bootstrap/3.3.7/css/bootstrap.min.css">
@@ -58,26 +59,33 @@
             },
             success: function (data) {
                 var i = 0;
-                var context1 = "";
                 var context = "";
                 var type;
                 var booked;
+                var images = "";
+
                 for (i in data) {
                     if (data[i].roomType == "1") {
-                        type = "单人";
+                        type = "单间";
                     } else {
-                        type = "双人";
+                        type = "标间";
                     }
-                    if (data[i].booked == true) {//
+                    if (data[i].booked == true) {
                         booked = "已预订|<a href=\"#\" data-toggle=\"modal\" onclick=\"checkdetails(" + data[i].roomId + ")\" data-target=\"#details\" id=\"check\" title=\"查看详情\">查看</a>";
                     } else {
                         booked = "空房";
                     }
+                    var pictureIndex = 0;
+                    for (pictureIndex in data[i].pictures) {
+                        images += "<img style=\"margin-right: 10px;width: 60px;height: 60px;\" src=\"http://localhost:8002/hotel/resources/hotel/" + data[i].pictures[pictureIndex] + "\">";
+                    }
+
                     context = "<tr><td>" + data[i].roomId + "</td>" +
                         "<td>" + type + "</td>" +
-                        "<td><img style=\"width: 60px;height: 60px;\" src=\"http://localhost:8002/hotel/resources/hotel/" + data[i].roomPicturePath + "\"></td>" +
+                        "<td>" + images + "</td>" +
                         "<td>" + data[i].roomPrice + "</td>" +
                         "<td>" + booked + "</td>" +
+                        "<td>" + data[i].hotelName + "</td>" +
                         "<td>" + "<button onclick=\"hotelEdit(" + data[i].roomId + ")\" type=\"button\" class=\"glyphicon glyphicon-edit btn-xs btn-primary\" style=\"border: none;\">" +
                         "</button>&nbsp;" +
                         "<button onclick=\"hotelDelete(" + data[i].roomId + ")\" type=\"button\" class=\"glyphicon glyphicon-trash btn-xs btn-danger\" style=\"border: none;\">" +
@@ -85,6 +93,7 @@
                         "</tr>";
                     $("#tb").append(context);
                     context = "";
+                    images = "";
                 }
             }
         });
@@ -150,9 +159,10 @@
             success: function (data) {
                 $("#booker").text(data.userName);
                 $("#dialog-roomId").text(data.roomId);
-                $("#dialog-roomType").text(data.roomType);
+                $("#dialog-roomType").text(data.roomType = 1?'单间':'标间');
                 $("#dialog-roomPrice").text(data.roomPrice);
                 $("#dialog-number").text(data.guests);
+                $("#dialog-date").text(data.startDate +" - "+data.endDate);
             }
         })
     }
@@ -191,37 +201,13 @@
         <th>图片简介</th>
         <th>价格</th>
         <th>是否预订</th>
+        <th>酒店</th>
         <th>操作</th>
     </tr>
     </thead>
     <tbody>
     </tbody>
 </table>
-
-<!--    <div style="height: 70px;text-align: center;line-height: 70px;border-top:1px solid #000;border-bottom:1px solid #000;">
-        <div class="col-md-2">房间号</div>
-        <div class="col-md-2">房间类型</div>
-        <div class="col-md-2">图片简介</div>
-        <div class="col-md-2">价格</div>
-        <div class="col-md-2">是否预订</div>
-        <div class="col-md-2">操作</div>
-    </div>-->
-<!--<div style="height: 70px;text-align: center;line-height: 70px;border-bottom:1px solid #000;">
-    <div class="col-md-2" style="border-right:1px solid #000;">单人</div>
-    <a href="#" data-toggle="modal" data-target="#details" id="check" title="查看详情">查看</a>
-    <div class="col-md-2"><img style="width: 60px;height: 60px;"
-                               src="http://localhost:8002/hotel/resources/u=1208544201,1064095414&fm=72.jpg"></div>
-    <div class="col-md-2">120</div>
-    <div class="col-md-2">
-        <button onclick="hotelEdit()" type="button" class="glyphicon glyphicon-edit btn-xs btn-primary"
-                style="border: none;">
-        </button>&nbsp;
-        <button onclick=hotelDelete("") type="button" class="glyphicon glyphicon-trash btn-xs btn-danger"
-                style="border: none;">
-        </button>
-    </div>
-    <a data-toggle="modal" data-target="#details" id="sign-in" class="login" title="Sign In">Sign In</a>
-</div>-->
 
 <div class="modal fade" id="details" tabindex="-1" role="dialog" data-backdrop="static" data-keyboard="false"
      aria-labelledby="exampleModalLabel">

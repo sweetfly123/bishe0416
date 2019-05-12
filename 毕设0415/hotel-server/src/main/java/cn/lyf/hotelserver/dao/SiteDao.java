@@ -15,4 +15,10 @@ public interface SiteDao {
     List<SiteDO> listHotSites();
 
     SiteDO getSiteById(Integer id);
+
+    int deleteSite(Integer id);
+
+    int updateSite(SiteDO siteDO);
+
+    List<SiteDO> listSitesBySearch(String word);
 }
