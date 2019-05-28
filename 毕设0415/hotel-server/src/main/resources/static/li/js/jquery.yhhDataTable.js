@@ -475,7 +475,7 @@
     		'displayLen':10,  /*每页显示条数*/
     		'currentPage':1, /*当前页码（初始页码）*/ 
     		'changeDisplayLen': false,  /*改变每页显示数目*/
-    		'displayLenMenu':[10,20,30,50] /*改变每页显示数目时的可选值*/
+            'displayLenMenu':[10,15,20,25] /*改变每页显示数目时的可选值*/
     	},
     	'tbodyData':{
 			'enabled':false,  /*是否传入表格数据*/

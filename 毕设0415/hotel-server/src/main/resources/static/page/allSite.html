@@ -53,6 +53,8 @@
 <script>
     var token = window.localStorage.getItem("token");
     $(function () {
+        localStorage.setItem("index", 0);
+        localStorage.setItem("pagesize", 10);
         $.ajax({
             url: "http://localhost:8002/hotel/sites",
             type: "GET",
@@ -62,10 +64,11 @@
                 e.setRequestHeader("Authorization", "bearer " + token);
             },
             success: function (data) {
+                localStorage.setItem("maxsize", data.length);
                 var images = "";
                 var i = 0;
                 var context = "";
-                for (i in data) {
+                for (i; i < 10; i++) {
                     var pictureIndex = 0;
                     for (pictureIndex in data[i].pictures) {
                         images += "<img style=\"margin-right: 10px;width: 60px;height: 60px;\" src=\"http://localhost:8002/hotel/resources/sites/" + data[i].pictures[pictureIndex] + "\">";
@@ -88,6 +91,99 @@
             }
         });
     });
+
+    function prePage() {
+        var index = Number(localStorage.getItem("index"));
+        var pagesize = Number(localStorage.getItem("pagesize"));
+        var maxsize = Number(localStorage.getItem("maxsize"));
+        index = index - pagesize;
+        if (index <= 0) {
+            index = maxsize - 10;
+        }
+        localStorage.setItem("index", index);
+        $.ajax({
+            url: "http://localhost:8002/hotel/sites/page/" + index + "/10",
+            type: "GET",
+            async: false,
+            dataType: "json",
+            beforeSend: function (e) {
+                e.setRequestHeader("Authorization", "bearer " + token);
+            },
+            success: function (data) {
+                var images = "";
+                var i = 0;
+                var context = "";
+                $("#tb").html(context);
+                for (i; i < 10; i++) {
+                    var pictureIndex = 0;
+                    for (pictureIndex in data[i].pictures) {
+                        images += "<img style=\"margin-right: 10px;width: 60px;height: 60px;\" src=\"http://localhost:8002/hotel/resources/sites/" + data[i].pictures[pictureIndex] + "\">";
+                    }
+
+                    context = "<tr><td>" + data[i].siteName + "</td>" +
+                        "<td style='width: 20%;' class='ellipsis'>" + data[i].siteDescribe + "</td>" +
+                        "<td>" + data[i].siteAddress + "</td>" +
+                        "<td>" + images + "</td>" +
+                        "<td>" + data[i].visitTimes + "</td>" +
+                        "<td>" + "<button onclick=\"siteEdit(" + data[i].id + ")\" type=\"button\" class=\"glyphicon glyphicon-edit btn-xs btn-primary\" style=\"border: none;\">" +
+                        "</button>&nbsp;" +
+                        "<button onclick=\"siteDelete(" + data[i].id + ")\" type=\"button\" class=\"glyphicon glyphicon-trash btn-xs btn-danger\" style=\"border: none;\">" +
+                        "</button>" + "</td>" +
+                        "</tr>";
+                    $("#tb").append(context);
+                    context = "";
+                    images = "";
+                }
+            }
+        });
+    }
+
+    function nextPage() {
+        var index = Number(localStorage.getItem("index"));
+        var pagesize = Number(localStorage.getItem("pagesize"));
+        var maxsize = Number(localStorage.getItem("maxsize"));
+
+        index = index + pagesize;
+        if (index >= maxsize) {
+            index = 0;
+        }
+        localStorage.setItem("index", index);
+        $.ajax({
+            url: "http://localhost:8002/hotel/sites/page/" + index + "/10",
+            type: "GET",
+            async: false,
+            dataType: "json",
+            beforeSend: function (e) {
+                e.setRequestHeader("Authorization", "bearer " + token);
+            },
+            success: function (data) {
+                var images = "";
+                var i = 0;
+                var context = "";
+                $("#tb").html(context);
+                for (i in data) {
+                    var pictureIndex = 0;
+                    for (pictureIndex in data[i].pictures) {
+                        images += "<img style=\"margin-right: 10px;width: 60px;height: 60px;\" src=\"http://localhost:8002/hotel/resources/sites/" + data[i].pictures[pictureIndex] + "\">";
+                    }
+
+                    context = "<tr><td>" + data[i].siteName + "</td>" +
+                        "<td style='width: 20%;' class='ellipsis'>" + data[i].siteDescribe + "</td>" +
+                        "<td>" + data[i].siteAddress + "</td>" +
+                        "<td>" + images + "</td>" +
+                        "<td>" + data[i].visitTimes + "</td>" +
+                        "<td>" + "<button onclick=\"siteEdit(" + data[i].id + ")\" type=\"button\" class=\"glyphicon glyphicon-edit btn-xs btn-primary\" style=\"border: none;\">" +
+                        "</button>&nbsp;" +
+                        "<button onclick=\"siteDelete(" + data[i].id + ")\" type=\"button\" class=\"glyphicon glyphicon-trash btn-xs btn-danger\" style=\"border: none;\">" +
+                        "</button>" + "</td>" +
+                        "</tr>";
+                    $("#tb").append(context);
+                    context = "";
+                    images = "";
+                }
+            }
+        });
+    }
 
     function siteEdit(siteId) {
         window.location.href = "http://localhost:8002/hotel/resources/page/editSite.html?siteId=" + siteId;
@@ -212,5 +308,9 @@
         </div>
     </div>
 </div>
+<ul class="pager" style="float: right">
+    <li><a href="javascript:void(0)" onclick="prePage()">上一页</a></li>
+    <li><a href="javascript:void(0)" onclick="nextPage()">下一页</a></li>
+</ul>
 </body>
 </html>

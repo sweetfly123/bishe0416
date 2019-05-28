@@ -19,4 +19,6 @@ public interface SiteService {
     int updateSite(SiteDO siteDO);
 
     List<SiteDO> listSitesBySearch(String word);
+
+    List<SiteDO> listSitesPage(String index, String pagesize);
 }

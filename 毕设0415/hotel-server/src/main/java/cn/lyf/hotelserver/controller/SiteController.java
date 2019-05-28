@@ -26,46 +26,52 @@ public class SiteController {
 
 
     @RequestMapping(method = RequestMethod.GET)
-    public List<SiteDO> listSites(){
+    public List<SiteDO> listSites() {
         List<SiteDO> siteDOS = siteService.listSites();
         return siteDOS;
     }
 
-    @RequestMapping(value = "/search/{word}",method = RequestMethod.GET)
-    public List<SiteDO> listSitesBySearch(@PathVariable("word") String word){
-        if (word.equals("nothing")){
-            word ="";
+    @RequestMapping(value = "/page/{index}/{pagesize}", method = RequestMethod.GET)
+    public List<SiteDO> listSitesPage(@PathVariable("index") String index, @PathVariable("pagesize") String pagesize) {
+        List<SiteDO> siteDOS = siteService.listSitesPage(index,pagesize);
+        return siteDOS;
+    }
+
+    @RequestMapping(value = "/search/{word}", method = RequestMethod.GET)
+    public List<SiteDO> listSitesBySearch(@PathVariable("word") String word) {
+        if (word.equals("nothing")) {
+            word = "";
         }
         List<SiteDO> siteDOS = siteService.listSitesBySearch(word);
         return siteDOS;
     }
 
-    @RequestMapping(value = "/hot",method = RequestMethod.GET)
-    public List<SiteDO> listHotSites(){
+    @RequestMapping(value = "/hot", method = RequestMethod.GET)
+    public List<SiteDO> listHotSites() {
         List<SiteDO> siteDOS = siteService.listHotSites();
         return siteDOS;
     }
 
-    @RequestMapping(value = "/{id}",method = RequestMethod.GET)
-    public SiteDO getSiteById(@PathVariable Integer id){
+    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
+    public SiteDO getSiteById(@PathVariable Integer id) {
         SiteDO site = siteService.getSiteById(id);
         return site;
     }
 
 
     @RequestMapping(method = RequestMethod.POST)
-    public String addSite(MultipartFile[] files, SiteDO siteDO){
+    public String addSite(MultipartFile[] files, SiteDO siteDO) {
         String msg = "";
         String realPath = path + "sites/";
         String picturePaths = "";
-        for(MultipartFile file:files){
+        for (MultipartFile file : files) {
             if (FileUtils.upload(file, realPath, file.getOriginalFilename())) {
                 // 上传成功，给出页面提示
                 msg = "上传成功！";
             } else {
                 msg = "上传失败！";
             }
-            picturePaths += file.getOriginalFilename()+"!!";
+            picturePaths += file.getOriginalFilename() + "!!";
         }
         siteDO.setSitePicturePath(picturePaths);
         // hotelDO.setRoomPicturePath(resourceLoader.getResource("file:" + path + fileName));
@@ -82,11 +88,11 @@ public class SiteController {
 
     @RequestMapping(value = "/modify", method = RequestMethod.POST)
     @PreAuthorize("hasAuthority('admin')")
-    public String updateSite(MultipartFile[] files,SiteDO siteDO) {
+    public String updateSite(MultipartFile[] files, SiteDO siteDO) {
         String msg = "";
         String realPath = path + "sites/";
         String picturePaths = "";
-        if(files != null){
+        if (files != null) {
             for (MultipartFile file : files) {
                 if (FileUtils.upload(file, realPath, file.getOriginalFilename())) {
                     msg = "上传成功！";

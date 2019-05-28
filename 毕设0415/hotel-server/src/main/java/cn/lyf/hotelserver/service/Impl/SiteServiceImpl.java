@@ -31,6 +31,23 @@ public class SiteServiceImpl implements SiteService {
         return siteDOS;
     }
 
+
+    @Override
+    public List<SiteDO> listSitesPage(String index, String pagesize) {
+        List<SiteDO> siteDOS = siteDao.listSitesPage(Integer.valueOf(index),Integer.valueOf(pagesize));
+        if (siteDOS.size() > 0) {
+            for (SiteDO site : siteDOS) {
+                String sitePicturePath = site.getSitePicturePath();
+                if (sitePicturePath != null && !("".equals(sitePicturePath))) {
+                    sitePicturePath = sitePicturePath.substring(0, sitePicturePath.length() - 2);
+                    site.setPictures(Arrays.asList(sitePicturePath.split("!!")));
+                }
+            }
+        }
+        return siteDOS;
+    }
+
+
     @Override
     public int addSite(SiteDO siteDO) {
         int flag = 0;
@@ -88,4 +105,5 @@ public class SiteServiceImpl implements SiteService {
         }
         return siteDOS;
     }
+
 }

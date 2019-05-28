@@ -1,6 +1,7 @@
 package cn.lyf.hotelserver.dao;
 
 import cn.lyf.hotelserver.entity.SiteDO;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -21,4 +22,6 @@ public interface SiteDao {
     int updateSite(SiteDO siteDO);
 
     List<SiteDO> listSitesBySearch(String word);
+
+    List<SiteDO> listSitesPage(@Param("index") Integer index, @Param("pagesize") Integer pagesize);
 }

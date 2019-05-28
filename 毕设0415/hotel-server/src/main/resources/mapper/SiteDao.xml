@@ -25,6 +25,13 @@
         WHERE status = '0'
     </select>
 
+    <select id="listSitesPage" resultMap="SiteDO">
+        SELECT
+        id,site_name,site_describe,site_address,visit_times,site_picture_path,site_grade,site_cost
+        FROM table_tourist_spots
+        WHERE status = '0' limit ${index},${pagesize}
+    </select>
+
     <!--查询景点-->
     <select id="listSitesBySearch" resultMap="SiteDO" parameterType="java.lang.String">
         SELECT
